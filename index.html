@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WineMatch | Descubra o Vinho Perfeito para sua Refeição</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="WineMatch - Ajudamos você a encontrar a harmonização de vinho ideal para qualquer prato ou ocasião com inteligência e elegância.">
+    <meta name="keywords" content="WineMatch, harmonização de vinhos, vinho e comida, escolher vinho, sommelier digital, picanha e vinho">
+    <meta name="author" content="WineMatch">
+    <meta property="og:title" content="WineMatch | Encontre o Vinho Perfeito">
+    <meta property="og:description" content="Experimente o WineMatch e encontre a combinação ideal de vinho para a sua refeição em segundos.">
+    <meta property="og:type" content="website">
+    
+    <!-- Google Fonts: Cormorant Garamond (Luxo/Elegante) & Inter (Moderno/Leitura) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Externo -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ==========================================
+       MODAL DE CONFIRMAÇÃO DE IDADE (PROTECÇÃO LEGAL)
+       ========================================== -->
+    <div id="age-modal" class="age-modal-overlay">
+        <div class="age-modal-card">
+            <div class="age-modal-logo">
+                <i class="fa-solid fa-wine-glass-alt"></i>
+                <h2>WineMatch</h2>
+            </div>
+            <h3>Verificação de Maioridade</h3>
+            <p>Este site contém conteúdo sobre bebidas alcoólicas e é destinado apenas a maiores de idade.</p>
+            <p class="age-question">Você tem 18 anos ou mais?</p>
+            
+            <div class="age-modal-buttons">
+                <button id="btn-age-yes" class="btn-gold">Sim, sou maior de 18 anos</button>
+                <button id="btn-age-no" class="btn-outline">Não</button>
+            </div>
+            
+            <p class="age-lgpd-warning">
+                <i class="fa-solid fa-shield-halved"></i>
+                <strong>Aviso de LGPD:</strong> Coletamos cookies necessários para salvar sua preferência de idade de acordo com nossa Política de Privacidade.
+            </p>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       BARRA DE NAVEGAÇÃO PRINCIPAL (HEADER)
+       ========================================== -->
+    <header id="main-header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="#hero-section">
+                    <i class="fa-solid fa-wine-glass-alt"></i>
+                    <span>WineMatch</span>
+                </a>
+            </div>
+            <nav class="nav-links">
+                <a href="#results-section">Resultados</a>
+                <a href="#how-it-works">Como Funciona</a>
+            </nav>
+            <div class="header-actions">
+                <button id="btn-open-login" class="btn-login-trigger">
+                    <i class="fa-regular fa-user"></i> Entrar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==========================================
+       GAVETA LATERAL DE LOGIN (SIDE DRAWER)
+       ========================================== -->
+    <div id="login-drawer" class="login-drawer-overlay">
+        <div class="login-drawer-content">
+            <div class="drawer-header">
+                <h3>Minha Conta</h3>
+                <button id="btn-close-login" class="btn-close" aria-label="Fechar Login">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="drawer-body">
+                <p class="drawer-subtitle">Acesse para salvar suas harmonizações favoritas e receber dicas personalizadas.</p>
+                
+                <form id="login-form" onsubmit="event.preventDefault();">
+                    <div class="form-group">
+                        <label for="login-email">E-mail</label>
+                        <input type="email" id="login-email" placeholder="seuemail@exemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Senha</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="login-remember" checked>
+                            <span class="checkmark"></span>
+                            Lembrar-me
+                        </label>
+                        <a href="#" class="forgot-password">Esqueci minha senha</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-gold btn-full">Entrar</button>
+                </form>
+                
+                <div class="divider"><span>ou entrar com</span></div>
+                
+                <button id="btn-google-login" class="btn-google">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" class="google-icon">
+                    Entrar com Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       SEÇÃO HERO (BUSCA POR HARMONIZAÇÃO)
+       ========================================== -->
+    <section id="hero-section" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container hero-container">
+            <div class="hero-content-wrapper">
+                <span class="hero-badge">Sommelier de IA de Nova Geração</span>
+                <h1 class="hero-title">Descubra o vinho perfeito para sua refeição</h1>
+                <p class="hero-subtitle">Mencione o prato que pretende preparar ou comer, e nossa IA recomendará os vinhos ideais divididos por faixas de preço.</p>
+                
+                <!-- Barra de Busca -->
+                <div class="search-box-wrapper">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-utensils search-icon"></i>
+                        <input type="text" id="food-input" placeholder="Qual comida você vai comer?" value="Picanha">
+                        <button id="btn-scan-label" class="btn-scan" title="Simular Scanner de Rótulo">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+                    </div>
+                    <button id="btn-search-match" class="btn-gold btn-search">
+                        <span>Buscar Harmonização</span>
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       SEÇÃO DE RESULTADOS (CARDS DE VINHO)
+       ========================================== -->
+    <section id="results-section" class="results-area">
+        <div class="container">
+            <div class="results-header">
+                <span class="results-subtitle">Harmonização Recomendada</span>
+                <h2 class="results-title">Combinações para: <span id="target-food-display">Picanha</span></h2>
+                <p class="results-desc">A gordura e o sabor marcante da Picanha exigem vinhos com boa estrutura de taninos e acidez para limpar o paladar.</p>
+            </div>
+            
+            <!-- Loading Spinner (Oculto por padrão) -->
+            <div id="search-loader" class="search-loader hidden">
+                <div class="spinner-spinner"></div>
+                <p>Nossa IA está analisando as notas de sabor e texturas do prato...</p>
+            </div>
+            
+            <!-- Grid de Cards de Vinho -->
+            <div id="cards-container" class="cards-grid">
+                
+                <!-- Card 1: Econômico -->
+                <div class="wine-card econ-card" data-tier="econ">
+                    <div class="wine-card-badge tier-green">
+                        <i class="fa-solid fa-leaf"></i> Econômico
+                    </div>
+                    <div class="wine-img-container">
+                        <img src="cabernet_nacional.png" alt="Cabernet Sauvignon Nacional" class="wine-bottle-img">
+                    </div>
+                    <div class="wine-card-body">
+                        <h3 class="wine-name">Cabernet Sauvignon Nacional</h3>
+                        <div class="wine-price">Preço médio: <strong>R$ 40</strong></div>
+                        
+                        <!-- Características/Composição -->
+                        <div class="wine-specs">
+                            <div class="spec-row">
+                                <span class="spec-label">Corpo</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 70%;"></div></div>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Notas</span>
+                                <span class="spec-value">Frutas vermelhas, especiarias</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Taninos</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 60%;"></div></div>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Acidez</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 65%;"></div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="why-match">
+                            <h4>Por que combina?</h4>
+                            <p>Sua acidez equilibrada e taninos moderados ajudam a cortar a gordura inicial da picanha sem pesar no bolso.</p>
+                        </div>
+                        
+                        <div class="rating-stars">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-regular fa-star"></i>
+                            <span class="rating-value">(4.0)</span>
+                        </div>
+                        
+                        <button class="btn-gold btn-full btn-details-trigger" data-wine="0">Ver detalhes</button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Intermediário -->
+                <div class="wine-card inter-card" data-tier="inter">
+                    <div class="wine-card-badge tier-gold">
+                        <i class="fa-solid fa-award"></i> Intermediário
+                    </div>
+                    <div class="wine-img-container">
+                        <img src="malbec_argentino.png" alt="Malbec Argentino" class="wine-bottle-img">
+                    </div>
+                    <div class="wine-card-body">
+                        <h3 class="wine-name">Malbec Argentino</h3>
+                        <div class="wine-price">Preço médio: <strong>R$ 90</strong></div>
+                        
+                        <!-- Características/Composição -->
+                        <div class="wine-specs">
+                            <div class="spec-row">
+                                <span class="spec-label">Corpo</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 85%;"></div></div>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Notas</span>
+                                <span class="spec-value">Ameixa, baunilha, cacau</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Taninos</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 80%;"></div></div>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Acidez</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 70%;"></div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="why-match">
+                            <h4>Por que combina?</h4>
+                            <p>O clássico churrasco pede Malbec. Seus taninos maduros e final amadeirado casam perfeitamente com a picanha grelhada.</p>
+                        </div>
+                        
+                        <div class="rating-stars">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-alt"></i>
+                            <span class="rating-value">(4.5)</span>
+                        </div>
+                        
+                        <button class="btn-gold btn-full btn-details-trigger" data-wine="1">Ver detalhes</button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Premium -->
+                <div class="wine-card premium-card" data-tier="premium">
+                    <div class="wine-card-badge tier-red">
+                        <i class="fa-solid fa-crown"></i> Premium
+                    </div>
+                    <div class="wine-img-container">
+                        <img src="cabernet_reserva.png" alt="Cabernet Sauvignon Reserva" class="wine-bottle-img">
+                    </div>
+                    <div class="wine-card-body">
+                        <h3 class="wine-name">Cabernet Sauvignon Reserva</h3>
+                        <div class="wine-price">Preço médio: <strong>R$ 220</strong></div>
+                        
+                        <!-- Características/Composição -->
+                        <div class="wine-specs">
+                            <div class="spec-row">
+                                <span class="spec-label">Corpo</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 95%;"></div></div>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Notas</span>
+                                <span class="spec-value">Tabaco, couro, frutas negras</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Taninos</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 90%;"></div></div>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Acidez</span>
+                                <div class="spec-bar"><div class="spec-fill" style="width: 75%;"></div></div>
+                            </div>
+                        </div>
+                        
+                        <div class="why-match">
+                            <h4>Por que combina?</h4>
+                            <p>Envelhecido em carvalho, possui complexidade ideal para cortes nobres de picanha com maturação prolongada.</p>
+                        </div>
+                        
+                        <div class="rating-stars">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span class="rating-value">(4.9)</span>
+                        </div>
+                        
+                        <button class="btn-gold btn-full btn-details-trigger" data-wine="2">Ver detalhes</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       SEÇÃO COMO FUNCIONA (INFOGRÁFICO)
+       ========================================== -->
+    <section id="how-it-works" class="info-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="info-subtitle">Processo Inteligente</span>
+                <h2 class="info-title">Como Funciona</h2>
+            </div>
+            
+            <div class="info-steps-container">
+                <!-- Passo 1 -->
+                <div class="step-card">
+                    <div class="step-icon-wrapper">
+                        <i class="fa-solid fa-utensils"></i>
+                        <span class="step-number">1</span>
+                    </div>
+                    <h3>Você informa o prato</h3>
+                    <p>Digite a refeição que planeja comer ou utilize o simulador de scanner de rótulos.</p>
+                </div>
+                
+                <div class="step-arrow">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+                
+                <!-- Passo 2 -->
+                <div class="step-card">
+                    <div class="step-icon-wrapper">
+                        <i class="fa-solid fa-brain"></i>
+                        <span class="step-number">2</span>
+                    </div>
+                    <h3>Nossa IA analisa</h3>
+                    <p>Buscamos no nosso banco de dados sommelier as notas químicas e harmônicas para o casamento perfeito.</p>
+                </div>
+                
+                <div class="step-arrow">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+                
+                <!-- Passo 3 -->
+                <div class="step-card">
+                    <div class="step-icon-wrapper">
+                        <i class="fa-solid fa-glass-cheers"></i>
+                        <span class="step-number">3</span>
+                    </div>
+                    <h3>A harmonização perfeita!</h3>
+                    <p>Aproveite sua refeição com o vinho que melhor se adapta ao seu paladar e bolso.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+       MODAL DE DETALHES (DICAS DE SERVIÇO E HUB DE PREÇOS)
+       ========================================== -->
+    <div id="details-modal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="btn-close modal-close-btn" aria-label="Fechar Detalhes">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="modal-grid">
+                <!-- Lateral Esquerda: Info Básica do Vinho -->
+                <div class="modal-wine-info">
+                    <div class="modal-wine-badge" id="modal-wine-tier">Premium</div>
+                    <img src="" alt="Garrafa de Vinho" id="modal-wine-image" class="modal-wine-img">
+                    <h3 id="modal-wine-name">Nome do Vinho</h3>
+                    <div class="modal-wine-price-display">Preço médio: <strong id="modal-wine-price">R$ 0,00</strong></div>
+                </div>
+                
+                <!-- Conteúdo Direito: Dicas e Hub de Preços -->
+                <div class="modal-wine-tabs">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" data-tab="service">Dicas de Serviço</button>
+                        <button class="tab-btn" data-tab="comparison">Comparação de Preços</button>
+                    </div>
+                    
+                    <div class="tabs-content">
+                        <!-- Tab 1: Dicas de Serviço -->
+                        <div class="tab-pane active" id="tab-service">
+                            <div class="service-tips-grid">
+                                <div class="tip-item">
+                                    <i class="fa-solid fa-thermometer-half"></i>
+                                    <div>
+                                        <h5>Temperatura Ideal</h5>
+                                        <p id="modal-wine-temp">16°C a 18°C</p>
+                                    </div>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                    <div>
+                                        <h5>Tempo de Aeração</h5>
+                                        <p id="modal-wine-aeration">30 minutos</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="spotify-playlist-wrapper">
+                                <h5><i class="fa-brands fa-spotify"></i> Playlist WineMatch</h5>
+                                <p>Sugerimos a trilha sonora perfeita para acompanhar a sua experiência sensorial.</p>
+                                <a href="https://open.spotify.com" target="_blank" class="btn-spotify">
+                                    <i class="fa-solid fa-play"></i> Ouvir no Spotify
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab 2: Comparação de Preços -->
+                        <div class="tab-pane" id="tab-comparison">
+                            <h5>Hub de Comparação de Preços</h5>
+                            <p class="comparison-intro">Lojas online ordenadas do menor para o maior preço:</p>
+                            
+                            <div class="price-comparison-list" id="modal-prices-list">
+                                <!-- Preenchido dinamicamente por JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       MODAL DE SCANNER DE RÓTULO (MELHORIA)
+       ========================================== -->
+    <div id="scanner-modal" class="modal-overlay">
+        <div class="scanner-card">
+            <button class="btn-close modal-close-btn" id="btn-close-scanner" aria-label="Fechar Scanner">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3>Scanner de Rótulo por IA</h3>
+            <p>Aponte a câmera para a garrafa ou simule o escaneamento do rótulo.</p>
+            
+            <div class="scanner-viewport">
+                <!-- Visor da Câmera Simulado -->
+                <div class="scanner-video-sim">
+                    <i class="fa-solid fa-wine-bottle scanner-bottle-icon"></i>
+                    <div class="scanner-laser"></div>
+                    <div class="scanner-corners"></div>
+                    
+                    <!-- Sobreposição de progresso/análise -->
+                    <div id="scanner-analysis-overlay" class="scanner-analysis-overlay hidden">
+                        <div class="loader-circle"></div>
+                        <p id="scanner-status-text">Escaneando imagem...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="scanner-actions">
+                <button id="btn-trigger-scan" class="btn-gold">Simular Escaneamento</button>
+            </div>
+            
+            <div id="scanner-result" class="scanner-result-box hidden">
+                <h5>Rótulo Identificado:</h5>
+                <p class="scanned-wine-name"><i class="fa-solid fa-wine-glass"></i> <strong id="scanned-wine-title">Château Margaux 2015</strong></p>
+                <p class="scanned-wine-match-desc"><strong>Prato Recomendado:</strong> Harmoniza divinamente com Carré de Cordeiro ao molho de hortelã ou Entrecôte grelhado.</p>
+                <button id="btn-use-scanned" class="btn-outline btn-full">Carregar prato harmonizado no site</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       RODAPÉ (FOOTER)
+       ========================================== -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-left">
+                <div class="footer-logo">
+                    <i class="fa-solid fa-wine-glass-alt"></i>
+                    <span>WineMatch</span>
+                </div>
+                <p>© 2026 WineMatch. Todos os direitos reservados. Aprecie com moderação.</p>
+                <p class="footer-legal-mention">A venda de bebidas alcoólicas é proibida para menores de 18 anos. Beba de forma responsável.</p>
+            </div>
+            <div class="footer-middle">
+                <h4>Links Úteis</h4>
+                <div class="footer-links-grid">
+                    <a href="#">Sobre nós</a>
+                    <a href="#">Termos de uso</a>
+                    <a href="#">Privacidade (LGPD)</a>
+                    <a href="#">Contato</a>
+                </div>
+            </div>
+            <div class="footer-right">
+                <h4>Siga-nos</h4>
+                <div class="footer-socials">
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script Externo -->
+    <script src="script.js"></script>
+</body>
+</html>

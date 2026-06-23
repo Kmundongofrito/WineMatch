@@ -1,0 +1,1744 @@
+/* ==========================================
+   WINEMATCH - PREMIUM DESIGN SYSTEM & STYLES
+   ========================================== */
+
+/* 1. VARIÁVEIS E CONFIGURAÇÕES GERAIS */
+:root {
+    --bg-dark-pure: #050405;
+    --bg-dark-gradient: radial-gradient(circle at top, #20040c 0%, #060206 100%);
+    --bg-wine-deep: #1e030b;
+    --bg-wine-medium: #3a0615;
+    --bg-wine-light: #520c22;
+    
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #ebd3bc; /* Off-white puxado para tom de cortiça/vinho */
+    --color-text-muted: #9e8a8e;
+    
+    --color-gold-bright: #ecd59f;
+    --color-gold-metallic: #d4af37;
+    --color-gold-dark: #aa851a;
+    
+    --tier-econ: #27ae60;
+    --tier-inter: #d4af37;
+    --tier-premium: #c0392b;
+    
+    --font-heading: 'Cormorant Garamond', serif;
+    --font-body: 'Inter', sans-serif;
+    
+    --transition-fast: 0.2s ease;
+    --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --border-glass: 1px solid rgba(212, 175, 55, 0.15);
+    --bg-glass: rgba(15, 6, 9, 0.7);
+    --shadow-gold: 0 8px 32px 0 rgba(212, 175, 55, 0.1);
+}
+
+/* RESET E BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    background-color: var(--bg-dark-pure);
+    background-image: var(--bg-dark-gradient);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* LINKS E ACESSOS GERAIS */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+/* BOTÕES DE ESTILO PREMIUM */
+.btn-gold {
+    background: linear-gradient(135deg, var(--color-gold-bright) 0%, var(--color-gold-metallic) 100%);
+    color: #1a030a;
+    border: none;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+.btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    filter: brightness(1.1);
+}
+
+.btn-gold:active {
+    transform: translateY(0);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--color-gold-bright);
+    border: 1px solid var(--color-gold-metallic);
+    padding: 12px 24px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition-smooth);
+}
+
+.btn-outline:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.btn-close:hover {
+    color: var(--color-gold-bright);
+    transform: rotate(90deg);
+}
+
+/* DECORATIVOS E TEXTOS */
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================
+   2. ESTILO: MODAL DE MAIORIDADE (PROTEÇÃO LEGAL)
+   ========================================== */
+.age-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(5, 4, 5, 0.95);
+    backdrop-filter: blur(15px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.age-modal-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.age-modal-card {
+    background: linear-gradient(145deg, #1b020a 0%, #0d0408 100%);
+    border: var(--border-glass);
+    padding: 45px 30px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.1);
+    animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.age-modal-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--color-gold-metallic);
+    font-size: 2rem;
+    margin-bottom: 25px;
+}
+
+.age-modal-logo h2 {
+    font-size: 2.2rem;
+}
+
+.age-modal-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.age-modal-card p {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+}
+
+.age-modal-card p.age-question {
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--color-gold-bright);
+    margin: 25px 0;
+}
+
+.age-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.age-modal-buttons button {
+    min-width: 150px;
+}
+
+.age-lgpd-warning {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 15px;
+    font-size: 0.8rem !important;
+    color: var(--color-text-muted) !important;
+    text-align: left;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.age-lgpd-warning i {
+    color: var(--color-gold-metallic);
+    margin-top: 2px;
+}
+
+/* ==========================================
+   3. ESTILO: CABEÇALHO (STICKY HEADER)
+   ========================================== */
+#main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: rgba(8, 7, 8, 0.75);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition-fast);
+}
+
+.header-container {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#main-header .logo a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.6rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-gold-bright);
+}
+
+#main-header .logo i {
+    color: var(--color-gold-metallic);
+}
+
+#main-header .nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+#main-header .nav-links a {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+#main-header .nav-links a:hover {
+    color: var(--color-gold-bright);
+}
+
+.btn-login-trigger {
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--color-gold-bright);
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-fast);
+}
+
+.btn-login-trigger:hover {
+    background: var(--color-gold-metallic);
+    color: #1a030a;
+    border-color: var(--color-gold-metallic);
+}
+
+/* ==========================================
+   4. ESTILO: GAVETA LATERAL DE LOGIN (SIDE DRAWER)
+   ========================================== */
+.login-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-smooth), visibility var(--transition-smooth);
+}
+
+.login-drawer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.login-drawer-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 420px;
+    height: 100%;
+    background: linear-gradient(180deg, #1b020a 0%, #080307 100%);
+    border-left: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+    transform: translateX(100%);
+    transition: transform var(--transition-smooth);
+}
+
+.login-drawer-overlay.open .login-drawer-content {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.drawer-header h3 {
+    font-size: 1.8rem;
+    color: var(--color-gold-bright);
+}
+
+.drawer-subtitle {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--color-gold-metallic);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+}
+
+/* Custom Checkbox */
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 25px;
+    cursor: pointer;
+    user-select: none;
+    color: var(--color-text-secondary);
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 1px;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: var(--color-gold-metallic);
+    border-color: var(--color-gold-metallic);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid #1a030a;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.forgot-password {
+    color: var(--color-gold-bright);
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    margin: 25px 0;
+    text-align: center;
+    position: relative;
+}
+
+.divider:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.divider span {
+    background: #0d0408;
+    padding: 0 15px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    position: relative;
+    z-index: 1;
+}
+
+.btn-google {
+    background: #ffffff;
+    color: #1c1c1c;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.btn-google:hover {
+    background: #f1f1f1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.google-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================
+   5. ESTILO: HERO SECTION (BUSCA)
+   ========================================== */
+.hero {
+    position: relative;
+    padding: 160px 0 100px 0;
+    background-image: url('wine_match_bg.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(5,4,5,0.7) 0%, rgba(26,3,10,0.92) 80%, rgba(5,4,5,1) 100%);
+    z-index: 1;
+}
+
+.hero-container {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hero-badge {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--color-gold-bright);
+    padding: 6px 18px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-bottom: 25px;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--color-text-secondary);
+    margin-bottom: 45px;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Caixa de Busca */
+.search-box-wrapper {
+    display: flex;
+    background: rgba(26, 3, 10, 0.8);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 8px;
+    padding: 8px;
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212,175,55,0.05);
+    backdrop-filter: blur(10px);
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    position: relative;
+    padding: 0 15px;
+}
+
+.search-icon {
+    color: var(--color-gold-metallic);
+    font-size: 1.1rem;
+    margin-right: 12px;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    width: 100%;
+    padding: 8px 0;
+}
+
+.search-bar input:focus {
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.btn-scan {
+    background: transparent;
+    border: none;
+    color: var(--color-gold-bright);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+.btn-scan:hover {
+    color: #ffffff;
+    transform: scale(1.15);
+}
+
+.btn-search {
+    padding: 14px 28px;
+    font-size: 1rem;
+    border-radius: 6px !important;
+}
+
+/* ==========================================
+   6. ESTILO: SEÇÃO DE RESULTADOS (CARDS)
+   ========================================== */
+.results-area {
+    padding: 80px 0;
+    position: relative;
+}
+
+.results-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 60px auto;
+}
+
+.results-subtitle {
+    color: var(--color-gold-metallic);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.results-title {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.results-title span {
+    color: var(--color-gold-bright);
+}
+
+.results-desc {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+}
+
+/* Loading search */
+.search-loader {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.spinner-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(212, 175, 55, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--color-gold-metallic);
+    margin: 0 auto 20px auto;
+    animation: spin 1s linear infinite;
+}
+
+.search-loader p {
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+/* Grid de Cards */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+/* Wine Card Styling */
+.wine-card {
+    background: linear-gradient(135deg, rgba(30, 3, 11, 0.65) 0%, rgba(8, 7, 8, 0.9) 100%);
+    border: var(--border-glass);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+}
+
+.wine-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.15);
+}
+
+/* Category Specific Highlight Borders */
+.wine-card.econ-card:hover {
+    border-color: var(--tier-econ);
+}
+
+.wine-card.inter-card:hover {
+    border-color: var(--tier-inter);
+}
+
+.wine-card.premium-card:hover {
+    border-color: var(--tier-premium);
+}
+
+/* Card Badge */
+.wine-card-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tier-green {
+    background: rgba(39, 174, 96, 0.15);
+    border: 1px solid rgba(39, 174, 96, 0.4);
+    color: #4cd137;
+}
+
+.tier-gold {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--color-gold-bright);
+}
+
+.tier-red {
+    background: rgba(192, 57, 43, 0.15);
+    border: 1px solid rgba(192, 57, 43, 0.4);
+    color: #ff7675;
+}
+
+/* Wine Image Container */
+.wine-img-container {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.0) 100%);
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+.wine-bottle-img {
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+}
+
+.wine-card:hover .wine-bottle-img {
+    transform: scale(1.08) rotate(2deg);
+}
+
+/* Card Body */
+.wine-card-body {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.wine-name {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 8px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+}
+
+.wine-price {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+}
+
+.wine-price strong {
+    color: var(--color-gold-bright);
+    font-size: 1.15rem;
+}
+
+/* Características / Barras */
+.wine-specs {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.spec-row {
+    margin-bottom: 8px;
+}
+
+.spec-row:last-child {
+    margin-bottom: 0;
+}
+
+.spec-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.spec-value {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.spec-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.spec-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(to right, var(--color-gold-dark), var(--color-gold-metallic));
+}
+
+/* Highlight fillings base */
+.econ-card .spec-fill {
+    background: linear-gradient(to right, #1e5a32, var(--tier-econ));
+}
+.inter-card .spec-fill {
+    background: linear-gradient(to right, var(--color-gold-dark), var(--color-gold-metallic));
+}
+.premium-card .spec-fill {
+    background: linear-gradient(to right, #801d12, var(--tier-premium));
+}
+
+/* Why Match explanation */
+.why-match {
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.why-match h4 {
+    font-size: 0.95rem;
+    color: var(--color-gold-bright);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.why-match p {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+/* Rating Stars */
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-gold-metallic);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.rating-value {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    margin-left: 6px;
+}
+
+/* ==========================================
+   7. ESTILO: SEÇÃO "COMO FUNCIONA" (INFOGRÁFICO)
+   ========================================== */
+.info-section {
+    background: rgba(13, 7, 10, 0.8);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 80px 0;
+}
+
+.info-section .section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.info-subtitle {
+    color: var(--color-gold-metallic);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.info-title {
+    font-size: 2.5rem;
+    color: #ffffff;
+}
+
+.info-steps-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.step-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 35px 25px;
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+    position: relative;
+    transition: var(--transition-fast);
+}
+
+.step-card:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-4px);
+}
+
+.step-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--bg-wine-medium) 0%, var(--bg-wine-light) 100%);
+    border: var(--border-glass);
+    color: var(--color-gold-bright);
+    font-size: 1.8rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.step-number {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 24px;
+    height: 24px;
+    background: var(--color-gold-metallic);
+    color: #1a030a;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-wine-medium);
+}
+
+.step-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    color: #ffffff;
+}
+
+.step-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.step-arrow {
+    font-size: 1.5rem;
+    color: var(--color-gold-metallic);
+    animation: bounceRight 1.5s infinite alternate;
+}
+
+/* ==========================================
+   8. ESTILO: MODAL DE DETALHES DO VINHO
+   ========================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(5, 4, 5, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast), visibility var(--transition-fast);
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-card {
+    background: linear-gradient(135deg, #1d030b 0%, #080307 100%);
+    border: var(--border-glass);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 30px rgba(212, 175, 55, 0.15);
+    animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+}
+
+/* Lateral do Vinho */
+.modal-wine-info {
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    padding-right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-wine-badge {
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.modal-wine-img {
+    height: 250px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+#modal-wine-name {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.modal-wine-price-display {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+}
+
+.modal-wine-price-display strong {
+    color: var(--color-gold-bright);
+    font-size: 1.25rem;
+}
+
+/* Tabs à Direira */
+.modal-wine-tabs {
+    display: flex;
+    flex-direction: column;
+}
+
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.tab-btn:hover {
+    color: #ffffff;
+}
+
+.tab-btn.active {
+    color: var(--color-gold-bright);
+    border-color: var(--color-gold-metallic);
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Dicas de Serviço Tab Content */
+.service-tips-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.tip-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.tip-item i {
+    font-size: 1.8rem;
+    color: var(--color-gold-metallic);
+}
+
+.tip-item h5 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 2px;
+}
+
+.tip-item p {
+    font-size: 1.1rem;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.spotify-playlist-wrapper {
+    background: linear-gradient(135deg, #0e1e12 0%, #030804 100%);
+    border: 1px solid rgba(30, 215, 96, 0.15);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.spotify-playlist-wrapper h5 {
+    color: #1db954;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spotify-playlist-wrapper p {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 15px;
+}
+
+.btn-spotify {
+    background: #1db954;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-fast);
+}
+
+.btn-spotify:hover {
+    background: #1ed760;
+    transform: scale(1.03);
+    box-shadow: 0 4px 15px rgba(30, 215, 96, 0.3);
+}
+
+/* Hub Comparador Tab Content */
+#tab-comparison h5 {
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.comparison-intro {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 20px;
+}
+
+.price-comparison-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.comparison-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 14px 20px;
+    border-radius: 6px;
+    transition: var(--transition-fast);
+}
+
+.comparison-row:hover {
+    border-color: rgba(212, 175, 55, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.store-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.store-logo-placeholder {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-wine-medium);
+    color: var(--color-gold-bright);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.store-name {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.store-badges {
+    display: flex;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.badge-cheapest {
+    background: rgba(39, 174, 96, 0.15);
+    border: 1px solid rgba(39, 174, 96, 0.3);
+    color: #2ecc71;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-freeship {
+    background: rgba(41, 128, 185, 0.15);
+    border: 1px solid rgba(41, 128, 185, 0.3);
+    color: #3498db;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.store-price-action {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.store-price {
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--color-gold-bright);
+}
+
+.btn-buy-mock {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--color-gold-metallic);
+    color: var(--color-gold-bright);
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.btn-buy-mock:hover {
+    background: var(--color-gold-metallic);
+    color: #1a030a;
+}
+
+/* ==========================================
+   9. ESTILO: MODAL SCANNER DE RÓTULO (MELHORIA)
+   ========================================== */
+.scanner-card {
+    background: linear-gradient(135deg, #140208 0%, #030104 100%);
+    border: var(--border-glass);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    padding: 35px 25px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 35px rgba(212, 175, 55, 0.15);
+    animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scanner-card h3 {
+    font-size: 1.6rem;
+    color: var(--color-gold-bright);
+    margin-bottom: 8px;
+}
+
+.scanner-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 25px;
+}
+
+/* Visor Câmera Simulado */
+.scanner-viewport {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.scanner-video-sim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #250915 0%, #0a0206 100%);
+}
+
+.scanner-bottle-icon {
+    font-size: 5rem;
+    color: rgba(212, 175, 55, 0.15);
+    animation: pulseGlow 2s infinite alternate;
+}
+
+/* Linha Laser Laser */
+.scanner-laser {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--color-gold-metallic);
+    box-shadow: 0 0 12px 2px var(--color-gold-bright);
+    z-index: 5;
+    animation: laserScan 2.5s infinite ease-in-out;
+}
+
+/* Moldura do Visor */
+.scanner-corners {
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    border: 2px dashed rgba(212, 175, 55, 0.3);
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* Sobreposição de análise */
+.scanner-analysis-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 3, 7, 0.85);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.scanner-analysis-overlay.hidden {
+    display: none;
+}
+
+.loader-circle {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(212, 175, 55, 0.2);
+    border-top-color: var(--color-gold-metallic);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+#scanner-status-text {
+    font-size: 0.9rem;
+    color: var(--color-gold-bright);
+    font-weight: 500;
+}
+
+/* Resultados do Escaneamento */
+.scanner-result-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 6px;
+    padding: 20px;
+    text-align: left;
+    margin-top: 10px;
+    animation: fadeIn 0.4s ease;
+}
+
+.scanner-result-box h5 {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.scanned-wine-name {
+    font-size: 1.15rem;
+    color: var(--color-gold-bright);
+    margin-bottom: 8px;
+}
+
+.scanned-wine-match-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 15px;
+}
+
+/* ==========================================
+   10. ESTILO: RODAPÉ (FOOTER)
+   ========================================== */
+footer {
+    background: #050405;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 60px 0 40px 0;
+    color: var(--color-text-muted);
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+}
+
+.footer-left .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.8rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-gold-bright);
+    margin-bottom: 15px;
+}
+
+.footer-left .footer-logo i {
+    color: var(--color-gold-metallic);
+}
+
+.footer-left p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+}
+
+.footer-legal-mention {
+    font-size: 0.75rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 10px;
+    line-height: 1.4;
+}
+
+.footer-middle h4, .footer-right h4 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.footer-links-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-links-grid a {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.footer-links-grid a:hover {
+    color: var(--color-gold-bright);
+}
+
+.footer-socials {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-socials a {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    transition: var(--transition-fast);
+}
+
+.footer-socials a:hover {
+    background: var(--color-gold-metallic);
+    color: #1a030a;
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   11. ANIMAÇÕES (CSS KEYFRAMES)
+   ========================================== */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes laserScan {
+    0%, 100% { top: 0%; }
+    50% { top: 100%; }
+}
+
+@keyframes pulseGlow {
+    from { color: rgba(212, 175, 55, 0.15); transform: scale(1); }
+    to { color: rgba(212, 175, 55, 0.35); transform: scale(1.05); }
+}
+
+@keyframes bounceRight {
+    from { transform: translateX(0); }
+    to { transform: translateX(6px); }
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ==========================================
+   12. RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================== */
+
+/* TABLETS E TELAS MÉDIAS (MAX 992PX) */
+@media (max-width: 992px) {
+    .modal-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .modal-wine-info {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-right: 0;
+        padding-bottom: 25px;
+    }
+}
+
+/* DISPOSITIVOS MÓVEIS (MAX 768PX) */
+@media (max-width: 768px) {
+    html {
+        font-size: 15px;
+    }
+    
+    #main-header .nav-links {
+        display: none; /* Simplificação em mobile */
+    }
+    
+    .hero {
+        padding: 130px 0 80px 0;
+        text-align: center;
+        min-height: auto;
+    }
+    
+    .search-box-wrapper {
+        flex-direction: column;
+        gap: 10px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        backdrop-filter: none;
+        padding: 0;
+    }
+    
+    .search-bar {
+        background: rgba(26, 3, 10, 0.95);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 6px;
+        padding: 6px 15px;
+        width: 100%;
+    }
+    
+    .btn-search {
+        width: 100%;
+        border-radius: 6px;
+        padding: 15px;
+    }
+    
+    .info-steps-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .step-arrow {
+        transform: rotate(90deg);
+        animation: bounceDown 1.5s infinite alternate;
+        margin: 10px 0;
+    }
+    
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .footer-left .footer-logo {
+        justify-content: center;
+    }
+    
+    .footer-socials {
+        justify-content: center;
+    }
+    
+    .service-tips-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .modal-card {
+        padding: 25px;
+    }
+}
+
+@keyframes bounceDown {
+    from { transform: rotate(90deg) translateX(0); }
+    to { transform: rotate(90deg) translateX(6px); }
+}

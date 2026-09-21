@@ -617,7 +617,7 @@ function initScannerModal() {
     });
 }
 
-const GEMINI_API_KEY = "AQ.Ab8RN6LL9rgUunFNDsVVwl8xXMgDVqdFjUNuIGuapqhwRrnI-A"; 
+const GEMINI_API_KEY = "."; 
 
 async function consultarSommelier() {
   const input = document.getElementById("foodInput").value.trim();

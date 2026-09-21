@@ -13,14 +13,14 @@
     <meta property="og:description" content="Experimente o WineMatch e encontre a combinação ideal de vinho para a sua refeição em segundos.">
     <meta property="og:type" content="website">
     
-    <!-- Google Fonts: Cormorant Garamond (Luxo/Elegante) & Inter (Moderno/Leitura) -->
+    <!-- Google Fonts: Cormorant Garamond & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome para ícones -->
+    <!-- FontAwesome & Boxicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     
     <!-- CSS Externo -->
     <link rel="stylesheet" href="style.css">
@@ -28,9 +28,9 @@
 <body>
 
     <!-- ==========================================
-       MODAL DE CONFIRMAÇÃO DE IDADE (PROTECÇÃO LEGAL)
+       MODAL DE CONFIRMAÇÃO DE IDADE (PROTEÇÃO LEGAL)
        ========================================== -->
-    <div id="age-modal" class="age-modal-overlay">
+    <div id="age-modal" class="age-modal-overlay" role="dialog" aria-modal="true">
         <div class="age-modal-card">
             <div class="age-modal-logo">
                 <i class="fa-solid fa-wine-glass-alt"></i>
@@ -41,8 +41,8 @@
             <p class="age-question">Você tem 18 anos ou mais?</p>
             
             <div class="age-modal-buttons">
-                <button id="btn-age-yes" class="btn-gold">Sim, sou maior de 18 anos</button>
-                <button id="btn-age-no" class="btn-outline">Não</button>
+                <button id="btn-age-yes" class="btn-gold" type="button">Sim, sou maior de 18 anos</button>
+                <button id="btn-age-no" class="btn-outline" type="button">Não</button>
             </div>
             
             <p class="age-lgpd-warning">
@@ -68,7 +68,7 @@
                 <a href="#how-it-works">Como Funciona</a>
             </nav>
             <div class="header-actions">
-                <button id="btn-open-login" class="btn-login-trigger">
+                <button id="btn-open-login" class="btn-login-trigger" type="button">
                     <i class="fa-regular fa-user"></i> Entrar
                 </button>
             </div>
@@ -78,29 +78,31 @@
     <!-- ==========================================
        GAVETA LATERAL DE LOGIN (SIDE DRAWER)
        ========================================== -->
-    <div id="login-drawer" class="login-drawer-overlay">
+    <div id="login-drawer" class="login-drawer-overlay" role="dialog" aria-modal="true">
         <div class="login-drawer-content">
             <div class="drawer-header">
                 <h3>Crie ou acesse sua conta</h3>
-                <button id="btn-close-login" class="btn-close" aria-label="Fechar Login">
+                <button id="btn-close-login" class="btn-close" aria-label="Fechar Login" type="button">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             <div class="drawer-body">
                 <p class="drawer-subtitle">Acesse para salvar suas harmonizações favoritas e receber dicas personalizadas.</p>
                 
-                <form id="login-form" onsubmit="event.preventDefault();">
+                <form id="login-form">
                     <div class="form-group">
-                        <label for="login-email">Email
-                        <i class="bx bxs-user"></i>
-                        <input type="email" id="login-email" placeholder="seuemail@exemplo.com" required>
-                        </label>
+                        <label for="login-email">Email</label>
+                        <div class="input-icon-wrapper">
+                            <i class="bx bxs-user"></i>
+                            <input type="email" id="login-email" placeholder="seuemail@exemplo.com" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="login-password">Senha
-                        <i class="bx bxs-lock-alt"></i>
-                        <input type="password" id="login-password" placeholder="••••••••" required>
-                        </label>
+                        <label for="login-password">Senha</label>
+                        <div class="input-icon-wrapper">
+                            <i class="bx bxs-lock-alt"></i>
+                            <input type="password" id="login-password" placeholder="••••••••" required>
+                        </div>
                     </div>
                     
                     <div class="form-options">
@@ -115,94 +117,107 @@
                     <button type="submit" class="btn-gold btn-full">Entrar</button>
                 </form>
                 
+                <div class="divider"><span>Ou entre com</span></div>
+
+                <button id="btn-google-login" class="btn-google" type="button">
+                    <i class="fa-brands fa-google"></i> Google
+                </button>
+
                 <div class="divider"><span>Não tenho conta</span></div>
                 
-                <button type="submit" class="btn-gold btn-full">Cadastre-se</button>
+                <button id="btn-register" class="btn-outline btn-full" type="button">Cadastre-se</button>
             </div>
         </div>
     </div>
 
-<!-- ==========================================
+    <!-- ==========================================
        SEÇÃO HERO (BUSCA POR HARMONIZAÇÃO)
        ========================================== -->
     <section id="hero-section" class="hero">
         <div class="hero-overlay"></div>
         <div class="container hero-container">
             <div class="hero-content-wrapper">
-                <span class="hero-badge">Guia de Ambientação </span>
+                <span class="hero-badge">Guia de Ambientação</span>
                 <h1 class="hero-title">Descubra o vinho perfeito para sua refeição</h1>
-                <p class="hero-subtitle">Mencione o prato que pretende preparar ou comer, e nossa IA recomendará os vinhos ideais divididos por faixas de preço.</p>
+                <p class="hero-subtitle">Mencione o prato que pretende preparar ou comer, e nossa IA recomendará a harmonização perfeita.</p>
                 
                 <!-- Barra de Busca -->
                 <div class="search-box-wrapper">
                     <div class="search-bar">
                         <i class="fa-solid fa-utensils search-icon"></i>
-                        <textarea id="foodInput" ></textarea>
-                        <button id="btn-scan-label" class="btn-scan" title="Simular Scanner de Rótulo">
+                        <input type="text" id="food-input" placeholder="Ex: Risoto de cogumelos, Picanha na brasa, Salmão grelhado...">
+                        <button id="btn-scan-label" class="btn-scan" title="Simular Scanner de Rótulo" type="button">
                             <i class="fa-solid fa-camera"></i>
                         </button>
                     </div>
-                    <button id="sommelierBtn" class="btn-gold btn-search"
-                        onclick="consultarSommelier()">Buscar Harmonização
+                    <button id="sommelier-btn" class="btn-gold btn-search" type="button">
+                        Buscar Harmonização
                     </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <div id="sommelierLoading" class="sommelier-loading" style="display: none;">
-                <h2>Buscando a melhor combinção para sua ocasião</h2>
-                <div class="spinner-spinner"></div>
+    <!-- ==========================================
+       SEÇÃO DE RESULTADOS (HARMONIZAÇÃO IA)
+       ========================================== -->
+    <section id="results-section" class="results-area">
+        <div class="container">
+            <!-- Loading com Spinner -->
+            <div id="sommelier-loading" class="sommelier-loading" style="display: none;">
+                <div class="spinner"></div>
+                <h2>Buscando a melhor combinação para sua ocasião...</h2>
+                <p>Consultando a inteligência sommelier</p>
             </div>
-  </div>
 
-<!-- Card de Resultado Interativo WineMatch -->
-<div id="sommelierResult" class="wm-result-container" style="display: none;">
-  
-  <div class="wm-result-header">
-    <span class="wm-badge">Harmonização Recomendada</span>
-    <h3 id="resVinho" class="wm-wine-title">-</h3>
-  </div>
+            <!-- Card de Resultado Interativo WineMatch -->
+            <div id="sommelier-result" class="wm-result-container" style="display: none;">
+                <div class="wm-result-header">
+                    <span class="wm-badge">Harmonização Recomendada</span>
+                    <h3 id="res-vinho" class="wm-wine-title">-</h3>
+                </div>
 
-  <div class="wm-result-grid">
-    <!-- Card Completo: Motivo da Harmonização -->
-    <div class="wm-card wm-card-full">
-      <div class="wm-card-icon"><i class="fa-solid fa-utensils"></i></div>
-      <div class="wm-card-content">
-        <h4>Por que combina?</h4>
-        <p id="resHarmonizacao">-</p>
-      </div>
-    </div>
+                <div class="wm-result-grid">
+                    <!-- Card Completo: Motivo da Harmonização -->
+                    <div class="wm-card wm-card-full">
+                        <div class="wm-card-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <div class="wm-card-content">
+                            <h4>Por que combina?</h4>
+                            <p id="res-harmonizacao">-</p>
+                        </div>
+                    </div>
 
-    <!-- Card Metade: Temperatura -->
-    <div class="wm-card">
-      <div class="wm-card-icon"><i class="fa-solid fa-temperature-half"></i></div>
-      <div class="wm-card-content">
-        <h4>Temperatura Ideal</h4>
-        <p id="resTemperatura" class="wm-highlight-text">-</p>
-      </div>
-    </div>
+                    <!-- Card Metade: Temperatura -->
+                    <div class="wm-card">
+                        <div class="wm-card-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div class="wm-card-content">
+                            <h4>Temperatura Ideal</h4>
+                            <p id="res-temperatura" class="wm-highlight-text">-</p>
+                        </div>
+                    </div>
 
-    <!-- Card Metade: Dica de Ocasião -->
-    <div class="wm-card">
-      <div class="wm-card-icon"><i class="fa-solid fa-compass"></i></div>
-      <div class="wm-card-content">
-        <h4>Ocasião & Ambiente</h4>
-        <p id="resDica">-</p>
-      </div>
-    </div>
-  </div>
+                    <!-- Card Metade: Dica de Ocasião -->
+                    <div class="wm-card">
+                        <div class="wm-card-icon"><i class="fa-solid fa-compass"></i></div>
+                        <div class="wm-card-content">
+                            <h4>Ocasião & Ambiente</h4>
+                            <p id="res-dica">-</p>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Ação Interativa: Copiar ou Compartilhar -->
-  <div class="wm-actions">
-    <button class="wm-btn-secondary" onclick="copiarHarmonizacao()">
-      <i class="fa-solid fa-copy"></i> Copiar Recomendação
-    </button>
-  </div>
-
-</div>
-
-
+                <!-- Ações Interativas -->
+                <div class="wm-actions">
+                    <button id="btn-copy-result" class="wm-btn-secondary" type="button">
+                        <i class="fa-solid fa-copy"></i> Copiar Recomendação
+                    </button>
+                    <button id="btn-open-details" class="btn-gold" type="button">
+                        <i class="fa-solid fa-circle-info"></i> Ver Dicas de Serviço
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- ==========================================
        SEÇÃO COMO FUNCIONA (INFOGRÁFICO)
@@ -257,35 +272,74 @@
     </section>
 
     <!-- ==========================================
+       MODAL DE SCANNER DE RÓTULO (SIMULADOR)
+       ========================================== -->
+    <div id="scanner-modal" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="scanner-card">
+            <button id="btn-close-scanner" class="btn-close modal-close-btn" aria-label="Fechar Scanner" type="button">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3>Scanner de Rótulo</h3>
+            <p>Aponte a câmera para o rótulo do seu vinho para identificar o prato ideal.</p>
+            
+            <div class="scanner-viewport">
+                <div class="scanner-video-sim">
+                    <i class="fa-solid fa-wine-bottle scanner-bottle-icon"></i>
+                </div>
+                <div class="scanner-laser"></div>
+                <div class="scanner-corners"></div>
+                
+                <div id="scanner-analysis-overlay" class="scanner-analysis-overlay hidden">
+                    <div class="loader-circle"></div>
+                    <span id="scanner-status-text">Iniciando câmera...</span>
+                </div>
+            </div>
+
+            <button id="btn-trigger-scan" class="btn-gold" type="button">
+                <i class="fa-solid fa-camera"></i> Iniciar Escaneamento
+            </button>
+
+            <div id="scanner-result" class="scanner-result-box hidden">
+                <h5>Vinho Identificado:</h5>
+                <h4 id="scanned-wine-title" class="scanned-wine-name">-</h4>
+                <p class="scanned-wine-match-desc">Harmonização sugerida adicionada com sucesso.</p>
+                <button id="btn-use-scanned" class="btn-gold btn-full" type="button">
+                    <i class="fa-solid fa-check"></i> Usar no Buscador
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
        MODAL DE DETALHES (DICAS DE SERVIÇO E HUB DE PREÇOS)
        ========================================== -->
-    <div id="details-modal" class="modal-overlay">
+    <div id="details-modal" class="modal-overlay" role="dialog" aria-modal="true">
         <div class="modal-card">
-            <button class="btn-close modal-close-btn" aria-label="Fechar Detalhes">
+            <button id="btn-close-details" class="btn-close modal-close-btn" aria-label="Fechar Detalhes" type="button">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div class="modal-grid">
-                <!-- Lateral Esquerda: Info Básica do Vinho -->
+                <!-- Lateral Esquerda -->
                 <div class="modal-wine-info">
-                    <div class="modal-wine-badge" id="modal-wine-tier">Premium</div>
-                    <img src="" alt="Garrafa de Vinho" id="modal-wine-image" class="modal-wine-img">
-                    <h3 id="modal-wine-name">Nome do Vinho</h3>
-                    <div class="modal-wine-price-display">Preço médio: <strong id="modal-wine-price">R$ 0,00</strong></div>
+                    <div class="modal-wine-badge" id="modal-wine-tier">Seleção Especial</div>
+                    <i class="fa-solid fa-wine-bottle modal-wine-placeholder-icon"></i>
+                    <h3 id="modal-wine-name">Vinho Sugerido</h3>
+                    <div class="modal-wine-price-display">Preço médio estimado: <strong id="modal-wine-price">R$ 120,00</strong></div>
                 </div>
                 
-                <!-- Conteúdo Direito: Dicas e Hub de Preços -->
+                <!-- Conteúdo Direito: Abas -->
                 <div class="modal-wine-tabs">
                     <div class="tabs-header">
-                        <button class="tab-btn active" data-tab="service">Dicas de Serviço</button>
-                        <button class="tab-btn" data-tab="comparison">Comparação de Preços</button>
+                        <button class="tab-btn active" data-tab="service" type="button">Dicas de Serviço</button>
+                        <button class="tab-btn" data-tab="comparison" type="button">Comparação de Preços</button>
                     </div>
                     
                     <div class="tabs-content">
-                        <!-- Tab 1: Dicas de Serviço -->
+                        <!-- Aba 1: Dicas de Serviço -->
                         <div class="tab-pane active" id="tab-service">
                             <div class="service-tips-grid">
                                 <div class="tip-item">
-                                    <i class="fa-solid fa-thermometer-half"></i>
+                                    <i class="fa-solid fa-temperature-half"></i>
                                     <div>
                                         <h5>Temperatura Ideal</h5>
                                         <p id="modal-wine-temp">16°C a 18°C</p>
@@ -303,19 +357,44 @@
                             <div class="spotify-playlist-wrapper">
                                 <h5><i class="fa-brands fa-spotify"></i> Playlist WineMatch</h5>
                                 <p>Sugerimos a trilha sonora perfeita para acompanhar a sua experiência sensorial.</p>
-                                <a href="https://open.spotify.com" target="_blank" class="btn-spotify">
+                                <a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer" class="btn-spotify">
                                     <i class="fa-solid fa-play"></i> Ouvir no Spotify
                                 </a>
                             </div>
                         </div>
                         
-                        <!-- Tab 2: Comparação de Preços -->
+                        <!-- Aba 2: Comparação de Preços -->
                         <div class="tab-pane" id="tab-comparison">
                             <h5>Hub de Comparação de Preços</h5>
-                            <p class="comparison-intro">Lojas online ordenadas do menor para o maior preço:</p>
+                            <p class="comparison-intro">Lojas online ordenadas por melhor condição:</p>
                             
                             <div class="price-comparison-list" id="modal-prices-list">
-                                <!-- Preenchido dinamicamente por JS -->
+                                <div class="comparison-row">
+                                    <div class="store-info">
+                                        <div class="store-logo-placeholder">E</div>
+                                        <div>
+                                            <div class="store-name">Evino</div>
+                                            <div class="store-badges"><span class="badge-cheapest">Melhor Preço</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="store-price-action">
+                                        <div class="store-price">R$ 114,90</div>
+                                        <button class="btn-buy-mock" type="button">Ver Loja</button>
+                                    </div>
+                                </div>
+                                <div class="comparison-row">
+                                    <div class="store-info">
+                                        <div class="store-logo-placeholder">W</div>
+                                        <div>
+                                            <div class="store-name">Wine.com.br</div>
+                                            <div class="store-badges"><span class="badge-freeship">Frete Grátis</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="store-price-action">
+                                        <div class="store-price">R$ 119,00</div>
+                                        <button class="btn-buy-mock" type="button">Ver Loja</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

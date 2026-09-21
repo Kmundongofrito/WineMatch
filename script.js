@@ -616,3 +616,92 @@ function initScannerModal() {
         }
     });
 }
+
+const GEMINI_API_KEY = "AQ.Ab8RN6LL9rgUunFNDsVVwl8xXMgDVqdFjUNuIGuapqhwRrnI-A"; 
+
+async function consultarSommelier() {
+  const input = document.getElementById("foodInput").value.trim();
+  const btn = document.getElementById("sommelierBtn");
+  const loading = document.getElementById("sommelierLoading");
+  const resultCard = document.getElementById("sommelierResult");
+
+  if (!input) {
+    alert("Por favor, digite o prato ou vinho!");
+    return;
+  }
+
+  btn.disabled = true;
+  loading.style.display = "block";
+  resultCard.style.display = "none";
+
+  const prompt = `
+    Você é um Sommelier profissional. O usuário informou: "${input}".
+    Responda EXCLUSIVAMENTE um objeto JSON válido, sem qualquer texto antes ou depois, com as chaves:
+    "vinho", "harmonizacao", "temperatura", "dica_ambiente".
+  `;
+
+  // Lista de modelos para tentar caso um esteja em pico de demanda
+  const modelos = ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.4-flash"];
+  let data = null;
+
+  try {
+    for (const modelo of modelos) {
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${GEMINI_API_KEY}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+
+        // Se for erro de alta demanda (503) ou limite de taxa (429), tenta o próximo modelo da lista
+        if (response.status === 503 || response.status === 429) {
+          console.warn(`Modelo ${modelo} ocupado. Tentando próximo...`);
+          continue; 
+        }
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Erro na API (${response.status}): ${errorData.error?.message || 'Chave ou requisição inválida'}`);
+        }
+
+        data = await response.json();
+        break; // Sucesso! Sai do loop de tentativas
+      } catch (err) {
+        // Se for o último modelo e falhar, lança o erro
+        if (modelo === modelos[modelos.length - 1]) throw err;
+      }
+    }
+
+    if (!data) throw new Error("Servidores do Google temporariamente ocupados. Tente novamente em alguns segundos.");
+
+    let rawText = data.candidates[0].content.parts[0].text;
+    rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+
+    const resultado = JSON.parse(rawText);
+
+    document.getElementById("resVinho").innerText = resultado.vinho || "-";
+    document.getElementById("resHarmonizacao").innerText = resultado.harmonizacao || "-";
+    document.getElementById("resTemperatura").innerText = resultado.temperatura || "-";
+    document.getElementById("resDica").innerText = resultado.dica_ambiente || "-";
+
+    resultCard.style.display = "block";
+  } catch (error) {
+    console.error("Detalhes do erro:", error);
+    alert(error.message);
+  } finally {
+    btn.disabled = false;
+    loading.style.display = "none";
+  }
+}
+
+function copiarHarmonizacao() {
+  const vinho = document.getElementById("resVinho").innerText;
+  const harmonizacao = document.getElementById("resHarmonizacao").innerText;
+  const temp = document.getElementById("resTemperatura").innerText;
+  
+  const texto = `🍷 ${vinho}\n🍽️ Harmonização: ${harmonizacao}\n🌡️ Temperatura: ${temp}\nEncontrado no WineMatch!`;
+  
+  navigator.clipboard.writeText(texto).then(() => {
+    alert("Recomendação copiada para a área de transferência!");
+  });
+}

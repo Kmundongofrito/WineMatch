@@ -122,14 +122,14 @@
         </div>
     </div>
 
-    <!-- ==========================================
+<!-- ==========================================
        SEÇÃO HERO (BUSCA POR HARMONIZAÇÃO)
        ========================================== -->
     <section id="hero-section" class="hero">
         <div class="hero-overlay"></div>
         <div class="container hero-container">
             <div class="hero-content-wrapper">
-                <span class="hero-badge">Sommelier de IA de Nova Geração</span>
+                <span class="hero-badge">Guia de Ambientação </span>
                 <h1 class="hero-title">Descubra o vinho perfeito para sua refeição</h1>
                 <p class="hero-subtitle">Mencione o prato que pretende preparar ou comer, e nossa IA recomendará os vinhos ideais divididos por faixas de preço.</p>
                 
@@ -137,193 +137,72 @@
                 <div class="search-box-wrapper">
                     <div class="search-bar">
                         <i class="fa-solid fa-utensils search-icon"></i>
-                        <input type="text" id="food-input" placeholder="Qual comida você vai comer?" value="Picanha">
+                        <textarea id="foodInput" ></textarea>
                         <button id="btn-scan-label" class="btn-scan" title="Simular Scanner de Rótulo">
                             <i class="fa-solid fa-camera"></i>
                         </button>
                     </div>
-                    <button id="btn-search-match" class="btn-gold btn-search">
-                        <span>Buscar Harmonização</span>
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                    <button id="sommelierBtn" class="btn-gold btn-search"
+                        onclick="consultarSommelier()">Buscar Harmonização
                     </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ==========================================
-       SEÇÃO DE RESULTADOS (CARDS DE VINHO)
-       ========================================== -->
-    <section id="results-section" class="results-area">
-        <div class="container">
-            <div class="results-header">
-                <span class="results-subtitle">Harmonização Recomendada</span>
-                <h2 class="results-title">Combinações para: <span id="target-food-display">Picanha</span></h2>
-                <p class="results-desc">A gordura e o sabor marcante da Picanha exigem vinhos com boa estrutura de taninos e acidez para limpar o paladar.</p>
-            </div>
-            
-            <!-- Loading Spinner (Oculto por padrão) -->
-            <div id="search-loader" class="search-loader hidden">
+    <div id="sommelierLoading" class="sommelier-loading" style="display: none;">
+                <h2>Buscando a melhor combinção para sua ocasião</h2>
                 <div class="spinner-spinner"></div>
-                <p>Nossa IA está analisando as notas de sabor e texturas do prato...</p>
             </div>
-            
-            <!-- Grid de Cards de Vinho -->
-            <div id="cards-container" class="cards-grid">
-                
-                <!-- Card 1: Econômico -->
-                <div class="wine-card econ-card" data-tier="econ">
-                    <div class="wine-card-badge tier-green">
-                        <i class="fa-solid fa-leaf"></i> Econômico
-                    </div>
-                    <div class="wine-img-container">
-                        <img src="cabernet_nacional.png" alt="Cabernet Sauvignon Nacional" class="wine-bottle-img">
-                    </div>
-                    <div class="wine-card-body">
-                        <h3 class="wine-name">Cabernet Sauvignon Nacional</h3>
-                        <div class="wine-price">Preço médio: <strong>R$ 40</strong></div>
-                        
-                        <!-- Características/Composição -->
-                        <div class="wine-specs">
-                            <div class="spec-row">
-                                <span class="spec-label">Corpo</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 70%;"></div></div>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Notas</span>
-                                <span class="spec-value">Frutas vermelhas, especiarias</span>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Taninos</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 60%;"></div></div>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Acidez</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 65%;"></div></div>
-                            </div>
-                        </div>
-                        
-                        <div class="why-match">
-                            <h4>Por que combina?</h4>
-                            <p>Sua acidez equilibrada e taninos moderados ajudam a cortar a gordura inicial da picanha sem pesar no bolso.</p>
-                        </div>
-                        
-                        <div class="rating-stars">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-regular fa-star"></i>
-                            <span class="rating-value">(4.0)</span>
-                        </div>
-                        
-                        <button class="btn-gold btn-full btn-details-trigger" data-wine="0">Ver detalhes</button>
-                    </div>
-                </div>
+  </div>
 
-                <!-- Card 2: Intermediário -->
-                <div class="wine-card inter-card" data-tier="inter">
-                    <div class="wine-card-badge tier-gold">
-                        <i class="fa-solid fa-award"></i> Intermediário
-                    </div>
-                    <div class="wine-img-container">
-                        <img src="malbec_argentino.png" alt="Malbec Argentino" class="wine-bottle-img">
-                    </div>
-                    <div class="wine-card-body">
-                        <h3 class="wine-name">Malbec Argentino</h3>
-                        <div class="wine-price">Preço médio: <strong>R$ 90</strong></div>
-                        
-                        <!-- Características/Composição -->
-                        <div class="wine-specs">
-                            <div class="spec-row">
-                                <span class="spec-label">Corpo</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 85%;"></div></div>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Notas</span>
-                                <span class="spec-value">Ameixa, baunilha, cacau</span>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Taninos</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 80%;"></div></div>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Acidez</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 70%;"></div></div>
-                            </div>
-                        </div>
-                        
-                        <div class="why-match">
-                            <h4>Por que combina?</h4>
-                            <p>O clássico churrasco pede Malbec. Seus taninos maduros e final amadeirado casam perfeitamente com a picanha grelhada.</p>
-                        </div>
-                        
-                        <div class="rating-stars">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star-half-alt"></i>
-                            <span class="rating-value">(4.5)</span>
-                        </div>
-                        
-                        <button class="btn-gold btn-full btn-details-trigger" data-wine="1">Ver detalhes</button>
-                    </div>
-                </div>
+<!-- Card de Resultado Interativo WineMatch -->
+<div id="sommelierResult" class="wm-result-container" style="display: none;">
+  
+  <div class="wm-result-header">
+    <span class="wm-badge">Harmonização Recomendada</span>
+    <h3 id="resVinho" class="wm-wine-title">-</h3>
+  </div>
 
-                <!-- Card 3: Premium -->
-                <div class="wine-card premium-card" data-tier="premium">
-                    <div class="wine-card-badge tier-red">
-                        <i class="fa-solid fa-crown"></i> Premium
-                    </div>
-                    <div class="wine-img-container">
-                        <img src="cabernet_reserva.png" alt="Cabernet Sauvignon Reserva" class="wine-bottle-img">
-                    </div>
-                    <div class="wine-card-body">
-                        <h3 class="wine-name">Cabernet Sauvignon Reserva</h3>
-                        <div class="wine-price">Preço médio: <strong>R$ 220</strong></div>
-                        
-                        <!-- Características/Composição -->
-                        <div class="wine-specs">
-                            <div class="spec-row">
-                                <span class="spec-label">Corpo</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 95%;"></div></div>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Notas</span>
-                                <span class="spec-value">Tabaco, couro, frutas negras</span>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Taninos</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 90%;"></div></div>
-                            </div>
-                            <div class="spec-row">
-                                <span class="spec-label">Acidez</span>
-                                <div class="spec-bar"><div class="spec-fill" style="width: 75%;"></div></div>
-                            </div>
-                        </div>
-                        
-                        <div class="why-match">
-                            <h4>Por que combina?</h4>
-                            <p>Envelhecido em carvalho, possui complexidade ideal para cortes nobres de picanha com maturação prolongada.</p>
-                        </div>
-                        
-                        <div class="rating-stars">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <span class="rating-value">(4.9)</span>
-                        </div>
-                        
-                        <button class="btn-gold btn-full btn-details-trigger" data-wine="2">Ver detalhes</button>
-                    </div>
-                </div>
+  <div class="wm-result-grid">
+    <!-- Card Completo: Motivo da Harmonização -->
+    <div class="wm-card wm-card-full">
+      <div class="wm-card-icon"><i class="fa-solid fa-utensils"></i></div>
+      <div class="wm-card-content">
+        <h4>Por que combina?</h4>
+        <p id="resHarmonizacao">-</p>
+      </div>
+    </div>
 
-            </div>
-        </div>
-    </section>
+    <!-- Card Metade: Temperatura -->
+    <div class="wm-card">
+      <div class="wm-card-icon"><i class="fa-solid fa-temperature-half"></i></div>
+      <div class="wm-card-content">
+        <h4>Temperatura Ideal</h4>
+        <p id="resTemperatura" class="wm-highlight-text">-</p>
+      </div>
+    </div>
+
+    <!-- Card Metade: Dica de Ocasião -->
+    <div class="wm-card">
+      <div class="wm-card-icon"><i class="fa-solid fa-compass"></i></div>
+      <div class="wm-card-content">
+        <h4>Ocasião & Ambiente</h4>
+        <p id="resDica">-</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ação Interativa: Copiar ou Compartilhar -->
+  <div class="wm-actions">
+    <button class="wm-btn-secondary" onclick="copiarHarmonizacao()">
+      <i class="fa-solid fa-copy"></i> Copiar Recomendação
+    </button>
+  </div>
+
+</div>
+
+
 
     <!-- ==========================================
        SEÇÃO COMO FUNCIONA (INFOGRÁFICO)
@@ -441,45 +320,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==========================================
-       MODAL DE SCANNER DE RÓTULO (MELHORIA)
-       ========================================== -->
-    <div id="scanner-modal" class="modal-overlay">
-        <div class="scanner-card">
-            <button class="btn-close modal-close-btn" id="btn-close-scanner" aria-label="Fechar Scanner">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <h3>Scanner de Rótulo por IA</h3>
-            <p>Aponte a câmera para a garrafa ou simule o escaneamento do rótulo.</p>
-            
-            <div class="scanner-viewport">
-                <!-- Visor da Câmera Simulado -->
-                <div class="scanner-video-sim">
-                    <i class="fa-solid fa-wine-bottle scanner-bottle-icon"></i>
-                    <div class="scanner-laser"></div>
-                    <div class="scanner-corners"></div>
-                    
-                    <!-- Sobreposição de progresso/análise -->
-                    <div id="scanner-analysis-overlay" class="scanner-analysis-overlay hidden">
-                        <div class="loader-circle"></div>
-                        <p id="scanner-status-text">Escaneando imagem...</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="scanner-actions">
-                <button id="btn-trigger-scan" class="btn-gold">Simular Escaneamento</button>
-            </div>
-            
-            <div id="scanner-result" class="scanner-result-box hidden">
-                <h5>Rótulo Identificado:</h5>
-                <p class="scanned-wine-name"><i class="fa-solid fa-wine-glass"></i> <strong id="scanned-wine-title">Château Margaux 2015</strong></p>
-                <p class="scanned-wine-match-desc"><strong>Prato Recomendado:</strong> Harmoniza divinamente com Carré de Cordeiro ao molho de hortelã ou Entrecôte grelhado.</p>
-                <button id="btn-use-scanned" class="btn-outline btn-full">Carregar prato harmonizado no site</button>
             </div>
         </div>
     </div>

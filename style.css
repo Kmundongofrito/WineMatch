@@ -731,137 +731,6 @@ h1, h2, h3, h4 {
     font-style: italic;
 }
 
-/* Grid de Cards */
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-}
-
-/* Wine Card Styling */
-.wine-card {
-    background: linear-gradient(135deg, rgba(30, 3, 11, 0.65) 0%, rgba(8, 7, 8, 0.9) 100%);
-    border: var(--border-glass);
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
-    display: flex;
-    flex-direction: column;
-}
-
-.wine-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.15);
-}
-
-/* Category Specific Highlight Borders */
-.wine-card.econ-card:hover {
-    border-color: var(--tier-econ);
-}
-
-.wine-card.inter-card:hover {
-    border-color: var(--tier-inter);
-}
-
-.wine-card.premium-card:hover {
-    border-color: var(--tier-premium);
-}
-
-/* Card Badge */
-.wine-card-badge {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.tier-green {
-    background: rgba(39, 174, 96, 0.15);
-    border: 1px solid rgba(39, 174, 96, 0.4);
-    color: #4cd137;
-}
-
-.tier-gold {
-    background: rgba(212, 175, 55, 0.15);
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    color: var(--color-gold-bright);
-}
-
-.tier-red {
-    background: rgba(192, 57, 43, 0.15);
-    border: 1px solid rgba(192, 57, 43, 0.4);
-    color: #ff7675;
-}
-
-/* Wine Image Container */
-.wine-img-container {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.0) 100%);
-    height: 280px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    overflow: hidden;
-}
-
-.wine-bottle-img {
-    height: 100%;
-    object-fit: contain;
-    transition: transform 0.5s ease;
-}
-
-.wine-card:hover .wine-bottle-img {
-    transform: scale(1.08) rotate(2deg);
-}
-
-/* Card Body */
-.wine-card-body {
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-.wine-name {
-    font-size: 1.6rem;
-    color: #ffffff;
-    margin-bottom: 8px;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-}
-
-.wine-price {
-    font-size: 0.95rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 20px;
-}
-
-.wine-price strong {
-    color: var(--color-gold-bright);
-    font-size: 1.15rem;
-}
-
-/* Características / Barras */
-.wine-specs {
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 12px;
-    border-radius: 6px;
-}
-
 .spec-row {
     margin-bottom: 8px;
 }
@@ -895,51 +764,6 @@ h1, h2, h3, h4 {
     height: 100%;
     border-radius: 10px;
     background: linear-gradient(to right, var(--color-gold-dark), var(--color-gold-metallic));
-}
-
-/* Highlight fillings base */
-.econ-card .spec-fill {
-    background: linear-gradient(to right, #1e5a32, var(--tier-econ));
-}
-.inter-card .spec-fill {
-    background: linear-gradient(to right, var(--color-gold-dark), var(--color-gold-metallic));
-}
-.premium-card .spec-fill {
-    background: linear-gradient(to right, #801d12, var(--tier-premium));
-}
-
-/* Why Match explanation */
-.why-match {
-    margin-bottom: 20px;
-    flex-grow: 1;
-}
-
-.why-match h4 {
-    font-size: 0.95rem;
-    color: var(--color-gold-bright);
-    margin-bottom: 6px;
-    font-weight: 600;
-}
-
-.why-match p {
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
-}
-
-/* Rating Stars */
-.rating-stars {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--color-gold-metallic);
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-}
-
-.rating-value {
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
-    margin-left: 6px;
 }
 
 /* ==========================================
@@ -1741,4 +1565,187 @@ footer {
 @keyframes bounceDown {
     from { transform: rotate(90deg) translateX(0); }
     to { transform: rotate(90deg) translateX(6px); }
+}
+
+/* Estilos isolados do módulo de IA */
+.sommelier-section {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #1e030b;
+  border-radius: 8px;
+}
+
+
+.sommelier-loading {
+  margin-top: 15px;
+  font-style: italic;
+  color: #666;
+  text-align: center;
+}
+
+.sommelier-result-card {
+  margin-top: 20px;
+  padding: 15px;
+  background: #1e030b;
+  border-left: 4px solid #C59B27;
+  border-radius: 6px;
+}
+
+#foodInput {
+  background-color: transparent !important; /* Torna o fundo transparente (ou usa uma cor como #1a080a) */
+  color: #ffffff;               /* Cor do texto ao digitar */
+  border: none !important;                 /* Remove a borda padrão branca/cinzenta */
+  outline: none !important;                /* Remove o contorno ao clicar no campo */
+  resize: none;                 /* Remove o ícone de redimensionar no canto inferior direito */
+  flex: 1;                      /* Faz o campo ocupar o espaço restante na barra */
+  height: auto;                 /* Ajusta a altura ao contentor */
+  font-family: var(--tier-inter);
+  font-size: large;
+}
+
+/* Contêiner Principal */
+.wm-result-container {
+  max-width: 850px;
+  margin: 35px auto 0 auto;
+  background: linear-gradient(145deg, #18090C, #0F0507);
+  border: 1px solid rgba(197, 155, 39, 0.3);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 25px rgba(197, 155, 39, 0.1);
+  animation: wmFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wmFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cabeçalho */
+.wm-result-header {
+  text-align: center;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 18px;
+}
+
+.wm-badge {
+  display: inline-block;
+  background: rgba(197, 155, 39, 0.15);
+  color: #C59B27;
+  border: 1px solid #C59B27;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.wm-wine-title {
+  color: #FFFFFF;
+  font-size: 1.8rem;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+/* Layout em Grid */
+.wm-result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.wm-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.wm-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(197, 155, 39, 0.4);
+  transform: translateY(-2px);
+}
+
+.wm-card-full {
+  grid-column: span 2;
+}
+
+.wm-card-icon {
+  color: #C59B27;
+  font-size: 1.2rem;
+  background: rgba(197, 155, 39, 0.12);
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wm-card-content h4 {
+  color: #A08C7D;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.wm-card-content p {
+  color: #E0E0E0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.wm-highlight-text {
+  color: #C59B27 !important;
+  font-weight: 600;
+  font-size: 1.1rem !important;
+}
+
+/* Botão de Ação */
+.wm-actions {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.wm-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(197, 155, 39, 0.5);
+  color: #C59B27;
+  padding: 10px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.wm-btn-secondary:hover {
+  background: #C59B27;
+  color: #0A0304;
+}
+
+/* Ajuste para celulares */
+@media (max-width: 650px) {
+  .wm-result-grid {
+    grid-template-columns: 1fr;
+  }
+  .wm-card-full {
+    grid-column: span 1;
+  }
 }

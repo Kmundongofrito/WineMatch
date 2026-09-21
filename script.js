@@ -1,13 +1,12 @@
 // ==========================================================================
 // CONSTANTES GLOBAIS (SCREAMING_SNAKE_CASE)
 // ==========================================================================
-// Insira sua chave de API aqui quando for rodar o projeto localmente
-const GEMINI_API_KEY = "AQ.Ab8RN6I3jvlrWgij9wB06wdd5FrJG_qO5e2L495gA2BpmRG7NQ"; 
+const GEMINI_API_KEY = ""; 
 
 const DEFAULT_MODELS = [
     "gemini-3.6-flash",
     "gemini-3.5-flash",
-    "gemini-3.4-flash"
+    "gemini-3.1-flash-lite"
 ];
 
 const MOCK_SCANNED_WINES = [
@@ -33,7 +32,7 @@ class WineMatchApp {
         this.initSommelierSearch();
     }
 
-    // 1. Verificação de Idade (kebab-case nos IDs / camelCase nas variáveis)
+    // 1. Verificação de Idade
     initAgeVerification() {
         const ageModal = document.getElementById("age-modal");
         const btnYes = document.getElementById("btn-age-yes");
@@ -100,7 +99,7 @@ class WineMatchApp {
         }
     }
 
-    // 3. Simulador de Scanner de Rótulo
+    // 3. Scanner de Rótulo
     initScannerModal() {
         const scannerModal = document.getElementById("scanner-modal");
         const btnOpen = document.getElementById("btn-scan-label");
@@ -168,10 +167,12 @@ class WineMatchApp {
         const tabBtns = detailsModal.querySelectorAll(".tab-btn");
         const tabPanes = detailsModal.querySelectorAll(".tab-pane");
 
-        btnOpen.addEventListener("click", () => {
-            detailsModal.classList.add("open");
-            document.body.classList.add("modal-open");
-        });
+        if (btnOpen) {
+            btnOpen.addEventListener("click", () => {
+                detailsModal.classList.add("open");
+                document.body.classList.add("modal-open");
+            });
+        }
 
         const closeDetails = () => {
             detailsModal.classList.remove("open");
@@ -210,7 +211,7 @@ class WineMatchApp {
         copyBtn.addEventListener("click", () => this.copiarHarmonizacao());
     }
 
-    // Chamada Direta à API Gemini
+    // Chamada Direta à API Gemini com JSON Estruturado
     async consultarSommelier() {
         const input = document.getElementById("food-input").value.trim();
         const searchBtn = document.getElementById("sommelier-btn");
@@ -223,7 +224,7 @@ class WineMatchApp {
         }
 
         if (!GEMINI_API_KEY) {
-            alert("Atenção: A chave GEMINI_API_KEY não foi informada no arquivo script.js.");
+            alert("Atenção: A chave GEMINI_API_KEY não foi configurada.");
             return;
         }
 
@@ -234,10 +235,50 @@ class WineMatchApp {
         document.getElementById("results-section").scrollIntoView({ behavior: "smooth" });
 
         const prompt = `
-            Você é um Sommelier profissional. O usuário informou: "${input}".
-            Responda EXCLUSIVAMENTE um objeto JSON válido, sem qualquer markdown ou formatação adicional, contendo as chaves:
-            "vinho", "harmonizacao", "temperatura", "dica_ambiente". Não aceite "${input}" que não sejam sérios ou que não 
-            tenham a ver com o assunto. Caso isso aconteça, responda: "${input}".
+            Você é um Sommelier e Curador Enogastronômico de alta gastronomia.
+            O usuário informou a seguinte refeição ou preferência: "${input}".
+
+            AVALIAÇÃO DE CONTEXTO:
+            - Verifique se a mensagem do usuário realmente se refere a comida, bebida, restaurante ou gastronomia.
+            - Caso o pedido seja sem sentido, ofensivo ou completamente alheio ao universo gastronômico, responda na chave "harmonizacao" orientando educadamente que informe um prato ou ingrediente para harmonização.
+
+            Responda EXCLUSIVAMENTE um objeto JSON válido, sem texto introdutório, notas ou blocos markdown adicionais, com exatamente a seguinte estrutura:
+            {
+              "vinho": "Nome do vinho sugerido com variedade e região (ex: Catena Zapata Malbec)",
+              "harmonizacao": "Explicação detalhada de por que combina sensorialmente e no paladar com o prato",
+              "temperatura": "Temperatura ideal de serviço (ex: 16°C a 18°C)",
+              "dica_ambiente": "Dica de ambiente, tipo de taça recomendada e estilo da refeição",
+              "preco_medio": "Preço médio de mercado no Brasil (ex: R$ 145,00)",
+              "categoria_tier": "Classificação (ex: Custo-Benefício, Seleção Especial ou Premium)",
+              "tempo_aeracao": "Tempo de aeração/decantação (ex: 30 minutos em decanter ou Não necessita aeração)",
+              "playlist": {
+                "nome": "Estilo ou nome sugerido para playlist no Spotify (ex: Bossa Nova & Jantar a Dois)",
+                "descricao": "Como essa trilha sonora enriquece a experiência sensorial do vinho e do prato"
+              },
+              "comparacao_lojas": [
+                {
+                  "loja": "Nome de loja/e-commerce de vinho (ex: Evino)",
+                  "inicial": "E",
+                  "preco": "R$ 139,90",
+                  "destaque": "Melhor Preço",
+                  "tipo_badge": "badge-cheapest"
+                },
+                {
+                  "loja": "Nome de outra loja (ex: Wine.com.br)",
+                  "inicial": "W",
+                  "preco": "R$ 145,00",
+                  "destaque": "Frete Grátis",
+                  "tipo_badge": "badge-freeship"
+                },
+                {
+                  "loja": "Nome de terceira loja conceituada (ex: Mistral ou Grand Cru)",
+                  "inicial": "M",
+                  "preco": "R$ 149,90",
+                  "destaque": "Safra Premiada",
+                  "tipo_badge": "badge-freeship"
+                }
+              ]
+            }
         `;
 
         let data = null;
@@ -287,16 +328,70 @@ class WineMatchApp {
         }
     }
 
+    // Renderiza Card e alimenta dinamicamente todas as partes do Modal
     renderizarResultado(resultado) {
         const resultCard = document.getElementById("sommelier-result");
 
+        // 1. Informações no Card Principal
         document.getElementById("res-vinho").textContent = resultado.vinho || "-";
         document.getElementById("res-harmonizacao").textContent = resultado.harmonizacao || "-";
         document.getElementById("res-temperatura").textContent = resultado.temperatura || "-";
         document.getElementById("res-dica").textContent = resultado.dica_ambiente || "-";
 
+        // 2. Lateral do Modal de Detalhes (Nome, Preço e Categoria/Tier)
         document.getElementById("modal-wine-name").textContent = resultado.vinho || "Vinho Sugerido";
+        document.getElementById("modal-wine-price").textContent = resultado.preco_medio || "R$ 120,00";
+        document.getElementById("modal-wine-tier").textContent = resultado.categoria_tier || "Seleção Especial";
+
+        // 3. Dicas de Serviço (Temperatura e Aeração gerados pela IA)
         document.getElementById("modal-wine-temp").textContent = resultado.temperatura || "16°C a 18°C";
+        document.getElementById("modal-wine-aeration").textContent = resultado.tempo_aeracao || "Não necessita aeração prévia";
+
+        // 4. Playlist Ideal (Gerada pela IA com link de busca direta no Spotify)
+        if (resultado.playlist) {
+            const playlistTitle = document.getElementById("modal-playlist-title");
+            const playlistDesc = document.getElementById("modal-playlist-desc");
+            const playlistLink = document.getElementById("modal-playlist-link");
+
+            if (playlistTitle) playlistTitle.textContent = resultado.playlist.nome || "Playlist WineMatch";
+            if (playlistDesc) playlistDesc.textContent = resultado.playlist.descricao || "Trilha sonora personalizada para sua refeição.";
+            if (playlistLink) {
+                const buscaCodificada = encodeURIComponent(resultado.playlist.nome || "Wine Dinner Jazz");
+                playlistLink.href = `https://open.spotify.com/search/${buscaCodificada}`;
+            }
+        }
+
+        // 5. Hub de Comparação de Preços (Gerado dinamicamente com lojas da IA)
+        const pricesList = document.getElementById("modal-prices-list");
+        if (pricesList) {
+            pricesList.innerHTML = "";
+            const lojas = Array.isArray(resultado.comparacao_lojas) ? resultado.comparacao_lojas : [];
+
+            lojas.forEach((item) => {
+                const row = document.createElement("div");
+                row.className = "comparison-row";
+
+                const badgeClass = item.tipo_badge === "badge-cheapest" ? "badge-cheapest" : "badge-freeship";
+                const linkBusca = `https://www.google.com/search?q=${encodeURIComponent(resultado.vinho + ' ' + item.loja)}`;
+
+                row.innerHTML = `
+                    <div class="store-info">
+                        <div class="store-logo-placeholder">${item.inicial || item.loja.charAt(0)}</div>
+                        <div>
+                            <div class="store-name">${item.loja}</div>
+                            <div class="store-badges"><span class="${badgeClass}">${item.destaque || "Oferta Online"}</span></div>
+                        </div>
+                    </div>
+                    <div class="store-price-action">
+                        <div class="store-price">${item.preco}</div>
+                        <a href="${linkBusca}" target="_blank" rel="noopener noreferrer" class="btn-buy-mock">
+                            Ver Oferta
+                        </a>
+                    </div>
+                `;
+                pricesList.appendChild(row);
+            });
+        }
 
         resultCard.style.display = "block";
     }

@@ -1222,6 +1222,12 @@ h1, h2, h3, h4 {
     border: 1px solid rgba(255, 255, 255, 0.05);
     padding: 14px 20px;
     border-radius: 6px;
+    transition: var(--transition-fast);
+}
+
+.comparison-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(212, 175, 55, 0.2);
 }
 
 .store-info {
@@ -1290,6 +1296,11 @@ h1, h2, h3, h4 {
     border-radius: 4px;
     font-weight: 600;
     cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
 }
 
 .btn-buy-mock:hover {
@@ -1368,6 +1379,7 @@ footer {
     align-items: center;
     justify-content: center;
     color: var(--color-text-secondary);
+    transition: var(--transition-fast);
 }
 
 .footer-socials a:hover {

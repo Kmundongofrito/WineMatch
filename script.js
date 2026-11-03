@@ -87,13 +87,13 @@ class WineMatchApp {
         loginForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const email = document.getElementById("login-email").value;
-            alert(`Login efetuado com sucesso para: ${email}`);
+            alert(`Demonstração. Em desenvolvimento.`);
             closeDrawer();
         });
 
         if (googleLogin) {
             googleLogin.addEventListener("click", () => {
-                alert("Simulação de Login via Google efetuada!");
+                alert("Sem API adicionada. Apenas Teste.");
                 closeDrawer();
             });
         }

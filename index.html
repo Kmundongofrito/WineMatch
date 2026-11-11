@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍷</text></svg>">
     <title>WineMatch | Descubra o Vinho Perfeito para sua Refeição</title>
     
     <!-- SEO Meta Tags -->
@@ -18,18 +19,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome & Boxicons -->
+    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     
     <!-- CSS Externo -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- ==========================================
-       MODAL DE CONFIRMAÇÃO DE IDADE (PROTEÇÃO LEGAL)
-       ========================================== -->
+    <!-- Modal de confirmação de idade -->
     <div id="age-modal" class="age-modal-overlay" role="dialog" aria-modal="true">
         <div class="age-modal-card">
             <div class="age-modal-logo">
@@ -52,9 +50,7 @@
         </div>
     </div>
 
-    <!-- ==========================================
-       BARRA DE NAVEGAÇÃO PRINCIPAL (HEADER)
-       ========================================== -->
+    <!-- Barra de navegação principal -->
     <header id="main-header">
         <div class="container header-container">
             <div class="logo">
@@ -64,7 +60,7 @@
                 </a>
             </div>
             <nav class="nav-links">
-                <a href="#results-section">Resultados</a>
+                <a href="#hero-section">Início</a>
                 <a href="#how-it-works">Como Funciona</a>
             </nav>
             <div class="header-actions">
@@ -75,9 +71,7 @@
         </div>
     </header>
 
-    <!-- ==========================================
-       GAVETA LATERAL DE LOGIN (SIDE DRAWER)
-       ========================================== -->
+    <!-- Gaveta lateral de login -->
     <div id="login-drawer" class="login-drawer-overlay" role="dialog" aria-modal="true">
         <div class="login-drawer-content">
             <div class="drawer-header">
@@ -93,14 +87,14 @@
                     <div class="form-group">
                         <label for="login-email">Email</label>
                         <div class="input-icon-wrapper">
-                            <i class="bx bxs-user"></i>
+                            <i class="fa-regular fa-envelope"></i>
                             <input type="email" id="login-email" placeholder="seuemail@exemplo.com" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="login-password">Senha</label>
                         <div class="input-icon-wrapper">
-                            <i class="bx bxs-lock-alt"></i>
+                            <i class="fa-solid fa-lock"></i>
                             <input type="password" id="login-password" placeholder="••••••••" required>
                         </div>
                     </div>
@@ -130,22 +124,19 @@
         </div>
     </div>
 
-    <!-- ==========================================
-       SEÇÃO HERO (BUSCA POR HARMONIZAÇÃO)
-       ========================================== -->
+    <!-- Seção hero -->
     <section id="hero-section" class="hero">
         <div class="hero-overlay"></div>
         <div class="container hero-container">
             <div class="hero-content-wrapper">
-                <span class="hero-badge">Guia de Ambientação</span>
                 <h1 class="hero-title">Descubra o vinho perfeito para sua refeição</h1>
-                <p class="hero-subtitle">Mencione o prato que pretende preparar ou comer, e nossa IA recomendará a harmonização completa com preços, dicas e playlist.</p>
+                <p class="hero-subtitle">Diga o que vai servir à mesa e receba a sugestão de vinho, com dicas de serviço, faixa de preço e uma playlist para acompanhar.</p>
                 
                 <!-- Barra de Busca -->
                 <div class="search-box-wrapper">
                     <div class="search-bar">
                         <i class="fa-solid fa-utensils search-icon"></i>
-                        <input type="text" id="food-input" placeholder="Ex: Risoto de cogumelos, Picanha na brasa, Salmão grelhado...">
+                        <input type="text" id="food-input" maxlength="120" aria-label="Prato ou refeição" placeholder="Ex: risoto de cogumelos, picanha na brasa">
                         <button id="btn-scan-label" class="btn-scan" title="Simular Scanner de Rótulo" type="button">
                             <i class="fa-solid fa-camera"></i>
                         </button>
@@ -154,20 +145,26 @@
                         Buscar Harmonização
                     </button>
                 </div>
+                <div class="hero-chips">
+                    <span class="hero-chips-label">Sem ideia do que servir? Experimente:</span>
+                    <button type="button" class="chip-prato">Picanha na brasa</button>
+                    <button type="button" class="chip-prato">Risoto de cogumelos</button>
+                    <button type="button" class="chip-prato">Salmão grelhado</button>
+                    <button type="button" class="chip-prato">Massa à bolonhesa</button>
+                    <button type="button" class="chip-prato">Tábua de queijos</button>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- ==========================================
-       SEÇÃO DE RESULTADOS (HARMONIZAÇÃO IA)
-       ========================================== -->
+    <!-- Seção de resultados -->
     <section id="results-section" class="results-area">
         <div class="container">
             <!-- Loading com Spinner -->
-            <div id="sommelier-loading" class="sommelier-loading" style="display: none;">
+            <div id="sommelier-loading" class="sommelier-loading" aria-live="polite" style="display: none;">
                 <div class="spinner"></div>
-                <h2>Buscando a melhor combinação para sua ocasião...</h2>
-                <p>Consultando a inteligência sommelier</p>
+                <h2>Escolhendo o vinho para o seu prato...</h2>
+                <p>Isso leva só alguns segundos</p>
             </div>
 
             <!-- Card de Resultado Interativo WineMatch -->
@@ -219,13 +216,10 @@
         </div>
     </section>
 
-    <!-- ==========================================
-       SEÇÃO COMO FUNCIONA (INFOGRÁFICO)
-       ========================================== -->
+    <!-- Seção como funciona -->
     <section id="how-it-works" class="info-section">
         <div class="container">
             <div class="section-header">
-                <span class="info-subtitle">Processo Inteligente</span>
                 <h2 class="info-title">Como Funciona</h2>
             </div>
             
@@ -237,7 +231,7 @@
                         <span class="step-number">1</span>
                     </div>
                     <h3>Você informa o prato</h3>
-                    <p>Digite a refeição que planeja comer ou utilize o simulador de scanner de rótulos.</p>
+                    <p>Digite a refeição que você planeja servir ou use o simulador de leitura de rótulo.</p>
                 </div>
                 
                 <div class="step-arrow">
@@ -250,8 +244,8 @@
                         <i class="fa-solid fa-brain"></i>
                         <span class="step-number">2</span>
                     </div>
-                    <h3>Nossa IA analisa</h3>
-                    <p>Buscamos no nosso banco de dados sommelier as notas químicas e harmônicas para o casamento perfeito.</p>
+                    <h3>A IA analisa o prato</h3>
+                    <p>Ela considera ingredientes, preparo e intensidade dos sabores para escolher um vinho que equilibre com a refeição.</p>
                 </div>
                 
                 <div class="step-arrow">
@@ -264,23 +258,21 @@
                         <i class="fa-solid fa-glass-cheers"></i>
                         <span class="step-number">3</span>
                     </div>
-                    <h3>A harmonização perfeita!</h3>
-                    <p>Aproveite sua refeição com o vinho que melhor se adapta ao seu paladar e bolso.</p>
+                    <h3>Pronto para brindar</h3>
+                    <p>Veja o vinho sugerido, como servir, quanto costuma custar e uma playlist para o clima da refeição.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ==========================================
-       MODAL DE SCANNER DE RÓTULO (SIMULADOR)
-       ========================================== -->
+    <!-- Modal de scanner de rótulo -->
     <div id="scanner-modal" class="modal-overlay" role="dialog" aria-modal="true">
         <div class="scanner-card">
             <button id="btn-close-scanner" class="btn-close modal-close-btn" aria-label="Fechar Scanner" type="button">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <h3>Scanner de Rótulo</h3>
-            <p>Aponte a câmera para o rótulo do seu vinho para identificar o prato ideal.</p>
+            <p>Demonstração: o reconhecimento do rótulo é simulado e identifica um vinho de exemplo.</p>
             
             <div class="scanner-viewport">
                 <div class="scanner-video-sim">
@@ -291,7 +283,7 @@
                 
                 <div id="scanner-analysis-overlay" class="scanner-analysis-overlay hidden">
                     <div class="loader-circle"></div>
-                    <span id="scanner-status-text">Iniciando câmera...</span>
+                    <span id="scanner-status-text">Preparando leitura...</span>
                 </div>
             </div>
 
@@ -302,7 +294,7 @@
             <div id="scanner-result" class="scanner-result-box hidden">
                 <h5>Vinho Identificado:</h5>
                 <h4 id="scanned-wine-title" class="scanned-wine-name">-</h4>
-                <p class="scanned-wine-match-desc">Harmonização sugerida adicionada com sucesso.</p>
+                <p class="scanned-wine-match-desc">Vamos buscar o prato que combina com ele.</p>
                 <button id="btn-use-scanned" class="btn-gold btn-full" type="button">
                     <i class="fa-solid fa-check"></i> Usar no Buscador
                 </button>
@@ -310,16 +302,14 @@
         </div>
     </div>
 
-    <!-- ==========================================
-       MODAL DE DETALHES (DICAS DE SERVIÇO E HUB DE PREÇOS)
-       ========================================== -->
+    <!-- Modal de detalhes -->
     <div id="details-modal" class="modal-overlay" role="dialog" aria-modal="true">
         <div class="modal-card">
             <button id="btn-close-details" class="btn-close modal-close-btn" aria-label="Fechar Detalhes" type="button">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div class="modal-grid">
-                <!-- Lateral Esquerda (Alimentada pela IA) -->
+                <!-- Lateral Esquerda -->
                 <div class="modal-wine-info">
                     <div class="modal-wine-badge" id="modal-wine-tier">Seleção Especial</div>
                     <i class="fa-solid fa-wine-bottle modal-wine-placeholder-icon"></i>
@@ -356,17 +346,17 @@
                             
                             <div class="spotify-playlist-wrapper">
                                 <h5><i class="fa-brands fa-spotify"></i> <span id="modal-playlist-title">Playlist WineMatch</span></h5>
-                                <p id="modal-playlist-desc">Sugerimos a trilha sonora perfeita para acompanhar a sua experiência sensorial.</p>
+                                <p id="modal-playlist-desc">Uma trilha para acompanhar a refeição.</p>
                                 <a id="modal-playlist-link" href="https://open.spotify.com" target="_blank" rel="noopener noreferrer" class="btn-spotify">
                                     <i class="fa-solid fa-play"></i> Ouvir no Spotify
                                 </a>
                             </div>
                         </div>
                         
-                        <!-- Aba 2: Comparação de Preços (Hub dinâmico pela IA) -->
+                        <!-- Aba 2: Comparação de Preços -->
                         <div class="tab-pane" id="tab-comparison">
                             <h5>Hub de Comparação de Preços</h5>
-                            <p class="comparison-intro">Lojas online e estimativas geradas por inteligência de mercado:</p>
+                            <p class="comparison-intro">Valores aproximados. Confira o preço final direto na loja.</p>
                             
                             <div class="price-comparison-list" id="modal-prices-list">
                                 <!-- Preenchido dinamicamente pela IA -->
@@ -378,9 +368,7 @@
         </div>
     </div>
 
-    <!-- ==========================================
-       RODAPÉ (FOOTER)
-       ========================================== -->
+    <!-- Rodapé -->
     <footer>
         <div class="container footer-container">
             <div class="footer-left">

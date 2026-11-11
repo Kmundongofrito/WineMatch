@@ -1,6 +1,4 @@
-// ==========================================================================
-// CONSTANTES GLOBAIS (SCREAMING_SNAKE_CASE)
-// ==========================================================================
+// Constantes globais
 const GEMINI_API_KEY = ""; 
 
 const DEFAULT_MODELS = [
@@ -9,6 +7,12 @@ const DEFAULT_MODELS = [
     "gemini-3.1-flash-lite"
 ];
 
+function escapeHtml(valor) {
+    const div = document.createElement("div");
+    div.textContent = String(valor ?? "");
+    return div.innerHTML;
+}
+
 const MOCK_SCANNED_WINES = [
     { title: "Chardonnay Gran Reserva 2021", food: "Salmão Grelhado" },
     { title: "Barolo DOCG 2018", food: "Costela de Cordeiro" },
@@ -16,9 +20,7 @@ const MOCK_SCANNED_WINES = [
     { title: "Chianti Classico DOCG 2019", food: "Massa à Bolonhesa" }
 ];
 
-// ==========================================================================
-// CONTROLADOR PRINCIPAL DA APLICAÇÃO (PascalCase)
-// ==========================================================================
+// Controlador principal da aplicação
 class WineMatchApp {
     constructor() {
         this.currentScanMatch = null;
@@ -30,6 +32,15 @@ class WineMatchApp {
         this.initScannerModal();
         this.initDetailsModal();
         this.initSommelierSearch();
+        this.initTeclado();
+    }
+
+    initTeclado() {
+        document.addEventListener("keydown", (e) => {
+            if (e.key !== "Escape") return;
+            document.querySelectorAll(".modal-overlay.open, .login-drawer-overlay.open").forEach((el) => el.classList.remove("open"));
+            document.body.classList.remove("modal-open");
+        });
     }
 
     // 1. Verificação de Idade
@@ -86,14 +97,13 @@ class WineMatchApp {
 
         loginForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            const email = document.getElementById("login-email").value;
-            alert(`Demonstração. Em desenvolvimento.`);
+            this.mostrarAviso("O login ainda não está disponível nesta versão.");
             closeDrawer();
         });
 
         if (googleLogin) {
             googleLogin.addEventListener("click", () => {
-                alert("Sem API adicionada. Apenas Teste.");
+                this.mostrarAviso("O login com Google ainda não está disponível.");
                 closeDrawer();
             });
         }
@@ -136,9 +146,9 @@ class WineMatchApp {
             btnTrigger.style.display = "none";
             analysisOverlay.classList.remove("hidden");
 
-            statusText.textContent = "Iniciando câmera...";
-            setTimeout(() => { statusText.textContent = "Focalizando rótulo da garrafa..."; }, 600);
-            setTimeout(() => { statusText.textContent = "Consultando base de sommelier..."; }, 1200);
+            statusText.textContent = "Preparando leitura...";
+            setTimeout(() => { statusText.textContent = "Lendo o rótulo..."; }, 600);
+            setTimeout(() => { statusText.textContent = "Identificando o vinho..."; }, 1200);
 
             setTimeout(() => {
                 analysisOverlay.classList.add("hidden");
@@ -208,6 +218,13 @@ class WineMatchApp {
             if (e.key === "Enter") this.consultarSommelier();
         });
 
+        document.querySelectorAll(".chip-prato").forEach((chip) => {
+            chip.addEventListener("click", () => {
+                foodInput.value = chip.textContent.trim();
+                this.consultarSommelier();
+            });
+        });
+
         copyBtn.addEventListener("click", () => this.copiarHarmonizacao());
     }
 
@@ -219,12 +236,12 @@ class WineMatchApp {
         const resultCard = document.getElementById("sommelier-result");
 
         if (!input) {
-            alert("Por favor, digite o prato ou vinho desejado!");
+            this.mostrarAviso("Digite um prato para buscar a harmonização.");
             return;
         }
 
         if (!GEMINI_API_KEY) {
-            alert("Atenção: A chave GEMINI_API_KEY não foi configurada.");
+            this.mostrarAviso("A busca precisa de uma chave da API do Gemini (GEMINI_API_KEY, no script.js).");
             return;
         }
 
@@ -232,6 +249,7 @@ class WineMatchApp {
         loading.style.display = "block";
         resultCard.style.display = "none";
 
+        document.getElementById("results-section").classList.add("active");
         document.getElementById("results-section").scrollIntoView({ behavior: "smooth" });
 
         const prompt = `
@@ -241,6 +259,8 @@ class WineMatchApp {
             AVALIAÇÃO DE CONTEXTO:
             - Verifique se a mensagem do usuário realmente se refere a comida, bebida, restaurante ou gastronomia.
             - Caso o pedido seja sem sentido, ofensivo ou completamente alheio ao universo gastronômico, responda na chave "harmonizacao" orientando educadamente que informe um prato ou ingrediente para harmonização.
+
+            Os preços devem ser estimativas aproximadas do mercado brasileiro, nunca valores oficiais.
 
             Responda EXCLUSIVAMENTE um objeto JSON válido, sem texto introdutório, notas ou blocos markdown adicionais, com exatamente a seguinte estrutura:
             {
@@ -291,7 +311,7 @@ class WineMatchApp {
                         {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } })
                         }
                     );
 
@@ -321,10 +341,11 @@ class WineMatchApp {
             this.renderizarResultado(resultado);
         } catch (error) {
             console.error("Detalhes do erro:", error);
-            alert(error.message);
+            this.mostrarAviso(error.message);
         } finally {
             searchBtn.disabled = false;
             loading.style.display = "none";
+            if (resultCard.style.display === "none") document.getElementById("results-section").classList.remove("active");
         }
     }
 
@@ -343,11 +364,11 @@ class WineMatchApp {
         document.getElementById("modal-wine-price").textContent = resultado.preco_medio || "R$ 120,00";
         document.getElementById("modal-wine-tier").textContent = resultado.categoria_tier || "Seleção Especial";
 
-        // 3. Dicas de Serviço (Temperatura e Aeração gerados pela IA)
+        // 3. Dicas de Serviço
         document.getElementById("modal-wine-temp").textContent = resultado.temperatura || "16°C a 18°C";
         document.getElementById("modal-wine-aeration").textContent = resultado.tempo_aeracao || "Não necessita aeração prévia";
 
-        // 4. Playlist Ideal (Gerada pela IA com link de busca direta no Spotify)
+        // 4. Playlist Ideal
         if (resultado.playlist) {
             const playlistTitle = document.getElementById("modal-playlist-title");
             const playlistDesc = document.getElementById("modal-playlist-desc");
@@ -361,7 +382,7 @@ class WineMatchApp {
             }
         }
 
-        // 5. Hub de Comparação de Preços (Gerado dinamicamente com lojas da IA)
+        // 5. Hub de Comparação de Preços
         const pricesList = document.getElementById("modal-prices-list");
         if (pricesList) {
             pricesList.innerHTML = "";
@@ -376,14 +397,14 @@ class WineMatchApp {
 
                 row.innerHTML = `
                     <div class="store-info">
-                        <div class="store-logo-placeholder">${item.inicial || item.loja.charAt(0)}</div>
+                        <div class="store-logo-placeholder">${escapeHtml(item.inicial || String(item.loja).charAt(0))}</div>
                         <div>
-                            <div class="store-name">${item.loja}</div>
-                            <div class="store-badges"><span class="${badgeClass}">${item.destaque || "Oferta Online"}</span></div>
+                            <div class="store-name">${escapeHtml(item.loja)}</div>
+                            <div class="store-badges"><span class="${badgeClass}">${escapeHtml(item.destaque || "Oferta online")}</span></div>
                         </div>
                     </div>
                     <div class="store-price-action">
-                        <div class="store-price">${item.preco}</div>
+                        <div class="store-price">${escapeHtml(item.preco)}</div>
                         <a href="${linkBusca}" target="_blank" rel="noopener noreferrer" class="btn-buy-mock">
                             Ver Oferta
                         </a>
@@ -396,15 +417,29 @@ class WineMatchApp {
         resultCard.style.display = "block";
     }
 
+    mostrarAviso(mensagem) {
+        let toast = document.getElementById("toast");
+        if (!toast) {
+            toast = document.createElement("div");
+            toast.id = "toast";
+            toast.setAttribute("role", "status");
+            document.body.appendChild(toast);
+        }
+        toast.textContent = mensagem;
+        toast.classList.add("show");
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
+    }
+
     copiarHarmonizacao() {
         const vinho = document.getElementById("res-vinho").textContent;
         const harmonizacao = document.getElementById("res-harmonizacao").textContent;
         const temperatura = document.getElementById("res-temperatura").textContent;
 
-        const texto = `🍷 ${vinho}\n🍽️ Harmonização: ${harmonizacao}\n🌡️ Temperatura: ${temperatura}\nEncontrado no WineMatch!`;
+        const texto = `${vinho}\n\nPor que combina: ${harmonizacao}\nTemperatura: ${temperatura}\n\nSugestão do WineMatch`;
 
         navigator.clipboard.writeText(texto).then(() => {
-            alert("Recomendação copiada para a área de transferência!");
+            this.mostrarAviso("Recomendação copiada.");
         }).catch((err) => {
             console.error("Erro ao copiar:", err);
         });

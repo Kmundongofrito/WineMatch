@@ -1,6 +1,4 @@
-/* ==========================================
-   WINEMATCH - PREMIUM DESIGN SYSTEM & STYLES
-   ========================================== */
+/* WineMatch */
 
 /* 1. VARIÁVEIS E CONFIGURAÇÕES GERAIS */
 :root {
@@ -136,9 +134,7 @@ h1, h2, h3, h4 {
     letter-spacing: 0.5px;
 }
 
-/* ==========================================
-   2. MODAL DE MAIORIDADE
-   ========================================== */
+/* Modal de maioridade */
 .age-modal-overlay {
     position: fixed;
     top: 0;
@@ -232,9 +228,7 @@ h1, h2, h3, h4 {
     margin-top: 2px;
 }
 
-/* ==========================================
-   3. CABEÇALHO (HEADER)
-   ========================================== */
+/* Cabeçalho */
 #main-header {
     position: fixed;
     top: 0;
@@ -302,9 +296,7 @@ h1, h2, h3, h4 {
     color: #1a030a;
 }
 
-/* ==========================================
-   4. GAVETA DE LOGIN (DRAWER)
-   ========================================== */
+/* Gaveta de login */
 .login-drawer-overlay {
     position: fixed;
     top: 0;
@@ -518,9 +510,7 @@ h1, h2, h3, h4 {
     transform: translateY(-1px);
 }
 
-/* ==========================================
-   5. SEÇÃO HERO (BUSCA)
-   ========================================== */
+/* Seção hero */
 .hero {
     position: relative;
     padding: 160px 0 100px 0;
@@ -647,9 +637,7 @@ h1, h2, h3, h4 {
     white-space: nowrap;
 }
 
-/* ==========================================
-   6. SEÇÃO DE RESULTADOS
-   ========================================== */
+/* Seção de resultados */
 .results-area {
     padding: 40px 0 80px 0;
     position: relative;
@@ -800,9 +788,7 @@ h1, h2, h3, h4 {
     color: #0a0304;
 }
 
-/* ==========================================
-   7. SEÇÃO "COMO FUNCIONA"
-   ========================================== */
+/* Seção "como funciona" */
 .info-section {
     background: rgba(13, 7, 10, 0.8);
     border-top: 1px solid rgba(255, 255, 255, 0.03);
@@ -889,9 +875,7 @@ h1, h2, h3, h4 {
     color: var(--color-gold-metallic);
 }
 
-/* ==========================================
-   8. MODAL DE SCANNER DE RÓTULO
-   ========================================== */
+/* Modal de scanner de rótulo */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -1038,9 +1022,7 @@ h1, h2, h3, h4 {
     margin-bottom: 15px;
 }
 
-/* ==========================================
-   9. MODAL DE DETALHES DO VINHO
-   ========================================== */
+/* Modal de detalhes do vinho */
 .modal-card {
     background: linear-gradient(135deg, #1d030b 0%, #080307 100%);
     border: var(--border-glass);
@@ -1308,9 +1290,7 @@ h1, h2, h3, h4 {
     color: #1a030a;
 }
 
-/* ==========================================
-   10. RODAPÉ (FOOTER)
-   ========================================== */
+/* Rodapé */
 footer {
     background: #050405;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -1387,9 +1367,7 @@ footer {
     color: #1a030a;
 }
 
-/* ==========================================
-   11. ANIMAÇÕES
-   ========================================== */
+/* Animações */
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
@@ -1414,9 +1392,7 @@ footer {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ==========================================
-   12. RESPONSIVIDADE
-   ========================================== */
+/* Responsividade */
 @media (max-width: 992px) {
     .modal-grid {
         grid-template-columns: 1fr;
@@ -1465,4 +1441,58 @@ footer {
     .wm-card-full {
         grid-column: span 1;
     }
+}
+
+/* Ajustes finais */
+.hero { min-height: 70vh; }
+.hero-overlay {
+    background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(212, 175, 55, 0.12), transparent 70%),
+        linear-gradient(to bottom, rgba(5, 4, 5, 0.85) 0%, rgba(26, 3, 10, 0.92) 80%, #050405 100%);
+}
+.hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
+.hero-chips-label { width: 100%; font-size: 0.85rem; color: var(--color-text-muted); }
+.chip-prato {
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--color-text-secondary);
+    padding: 7px 16px;
+    border-radius: 30px;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+.chip-prato:hover { background: rgba(212, 175, 55, 0.12); border-color: var(--color-gold-metallic); color: #ffffff; }
+.results-area { padding: 0; }
+.results-area.active { padding: 40px 0 80px; }
+.info-section .section-header { margin-bottom: 40px; }
+.info-steps-container { align-items: stretch; }
+.step-arrow { align-self: center; }
+.wm-card-content h4, .tip-item h5, .form-group label { text-transform: none; letter-spacing: 0.3px; }
+#toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    max-width: 90%;
+    background: #1b020a;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--color-gold-bright);
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    z-index: 10000;
+}
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+:focus-visible { outline: 2px solid var(--color-gold-bright); outline-offset: 2px; }
+@media (max-width: 768px) {
+    .search-box-wrapper .btn-search { width: 100%; }
+    .step-arrow { align-self: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

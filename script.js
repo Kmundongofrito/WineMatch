@@ -240,11 +240,6 @@ class WineMatchApp {
             return;
         }
 
-        if (!GEMINI_API_KEY) {
-            this.mostrarAviso("A busca precisa de uma chave da API do Gemini (GEMINI_API_KEY, no script.js).");
-            return;
-        }
-
         searchBtn.disabled = true;
         loading.style.display = "block";
         resultCard.style.display = "none";

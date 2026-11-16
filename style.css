@@ -1,5 +1,3 @@
-/* WineMatch */
-
 /* 1. VARIÁVEIS E CONFIGURAÇÕES GERAIS */
 :root {
     --bg-dark-pure: #050405;
@@ -1495,4 +1493,113 @@ footer {
 }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/*  CORREÇÃO MOBILE – Modal de detalhes do vinho */
+
+/* Overlay: usa a altura real da tela no celular (100vh ignora a barra do navegador)
+   e permite rolar caso o modal seja maior que a tela */
+.modal-overlay {
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    padding: 16px 0;
+    overscroll-behavior: contain;
+}
+
+/* O card nunca passa da tela e rola por dentro */
+.modal-card,
+.scanner-card {
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    margin: auto;
+}
+
+/* Evita que conteúdo longo "empurre" a coluna do grid para fora do card */
+.modal-grid > *,
+.modal-wine-info,
+.modal-wine-tabs,
+.tip-item > div {
+    min-width: 0;
+}
+
+.modal-wine-tabs { width: 100%; }
+
+#modal-wine-name,
+.tip-item p,
+.tip-item h5 {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 992px) {
+    .modal-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .modal-card {
+        width: 94%;
+        padding: 56px 16px 20px;   /* espaço em cima para o botão de fechar */
+    }
+
+    .modal-close-btn {
+        top: 12px;
+        right: 12px;
+    }
+
+    .modal-grid { gap: 20px; }
+
+    .modal-wine-info { padding-bottom: 18px; }
+
+    .modal-wine-badge { margin-bottom: 12px; }
+
+    .modal-wine-placeholder-icon {
+        font-size: 3rem;
+        margin-bottom: 12px;
+    }
+
+    #modal-wine-name { font-size: 1.25rem; line-height: 1.3; }
+
+    /* Abas: dividem a largura igualmente e quebram o texto se precisar */
+    .tabs-header {
+        gap: 4px;
+        margin-bottom: 18px;
+    }
+
+    .tab-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 10px 6px;
+        font-size: 0.85rem;
+        line-height: 1.25;
+    }
+
+    /* Cards de temperatura / aeração: um embaixo do outro */
+    .service-tips-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .tip-item {
+        padding: 12px 14px;
+        gap: 12px;
+    }
+
+    .tip-item i {
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+
+    .tip-item p { font-size: 1rem; }
+
+    .spotify-playlist-wrapper { padding: 16px; }
+
+    /* Lista de preços */
+    .comparison-row {
+        padding: 12px 14px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
 }

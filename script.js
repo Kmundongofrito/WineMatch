@@ -1,5 +1,5 @@
 // Constantes globais
-const GEMINI_API_KEY = ""; 
+const GEMINI_API_KEY = "AQ.Ab8RN6KWIZ5DQxsonjWEizBMiq41gQCqZXa2acRxlEJfehsCSw"; 
 
 const DEFAULT_MODELS = [
     "gemini-3.6-flash",

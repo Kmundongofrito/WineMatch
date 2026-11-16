@@ -1,5 +1,5 @@
 // Constantes globais
-const GEMINI_API_KEY = "AQ.Ab8RN6J787Wi_hF5SRoujjX80oZu_wVse72L1C8cM3vqcIID4A"; 
+const API_URL = "https://winematch-api.gianemolo.workers.dev/";
 
 const DEFAULT_MODELS = [
     "gemini-3.6-flash",
@@ -306,14 +306,14 @@ class WineMatchApp {
         try {
             for (const modelo of DEFAULT_MODELS) {
                 try {
-                    const response = await fetch(
-                        `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${GEMINI_API_KEY}`,
-                        {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } })
-                        }
-                    );
+                    const response = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        modelo,
+        corpo: { contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } }
+    })
+});
 
                     if (response.status === 503 || response.status === 429) {
                         console.warn(`Modelo ${modelo} ocupado. Tentando próximo...`);

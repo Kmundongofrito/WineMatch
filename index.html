@@ -137,7 +137,7 @@
                     <div class="search-bar">
                         <i class="fa-solid fa-utensils search-icon"></i>
                         <input type="text" id="food-input" maxlength="120" aria-label="Prato ou refeição" placeholder="Ex: risoto de cogumelos, picanha na brasa">
-                        <button id="btn-scan-label" class="btn-scan" title="Simular Scanner de Rótulo" type="button">
+                        <button id="btn-scan-label" class="btn-scan" title="Escanear rótulo ou prato" aria-label="Escanear rótulo ou prato" type="button">
                             <i class="fa-solid fa-camera"></i>
                         </button>
                     </div>
@@ -272,12 +272,15 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <h3>Scanner de Rótulo</h3>
-            <p>Demonstração: o reconhecimento do rótulo é simulado e identifica um vinho de exemplo.</p>
+            <p>Aponte a câmera para o rótulo do vinho ou para o prato que vai servir.</p>
             
             <div class="scanner-viewport">
-                <div class="scanner-video-sim">
+                <video id="scanner-video" class="scanner-video hidden" autoplay playsinline muted></video>
+                <img id="scanner-preview" class="scanner-preview hidden" alt="Foto enviada para análise">
+                <div id="scanner-placeholder" class="scanner-video-sim">
                     <i class="fa-solid fa-wine-bottle scanner-bottle-icon"></i>
                 </div>
+                <canvas id="scanner-canvas" hidden></canvas>
                 <div class="scanner-laser"></div>
                 <div class="scanner-corners"></div>
                 
@@ -287,16 +290,25 @@
                 </div>
             </div>
 
-            <button id="btn-trigger-scan" class="btn-gold" type="button">
-                <i class="fa-solid fa-camera"></i> Iniciar Escaneamento
-            </button>
+            <div id="scanner-actions" class="scanner-actions">
+                <button id="btn-trigger-scan" class="btn-gold" type="button">
+                    <i class="fa-solid fa-camera"></i> Tirar foto
+                </button>
+                <button id="btn-scan-gallery" class="btn-outline" type="button">
+                    <i class="fa-solid fa-image"></i> Escolher da galeria
+                </button>
+            </div>
+            <input id="scanner-file" type="file" accept="image/*" capture="environment" hidden>
 
             <div id="scanner-result" class="scanner-result-box hidden">
-                <h5>Vinho Identificado:</h5>
+                <h5 id="scanned-label">Vinho identificado:</h5>
                 <h4 id="scanned-wine-title" class="scanned-wine-name">-</h4>
-                <p class="scanned-wine-match-desc">Vamos buscar o prato que combina com ele.</p>
+                <p id="scanned-desc" class="scanned-wine-match-desc"></p>
                 <button id="btn-use-scanned" class="btn-gold btn-full" type="button">
                     <i class="fa-solid fa-check"></i> Usar no Buscador
+                </button>
+                <button id="btn-scan-retry" class="btn-outline btn-full btn-retry" type="button">
+                    <i class="fa-solid fa-rotate-right"></i> Tirar outra foto
                 </button>
             </div>
         </div>

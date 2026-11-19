@@ -938,6 +938,34 @@ h1, h2, h3, h4 {
     background: radial-gradient(circle, #250915 0%, #0a0206 100%);
 }
 
+.scanner-video,
+.scanner-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.scanner-video.hidden,
+.scanner-preview.hidden,
+.scanner-video-sim.hidden,
+.scanner-actions.hidden {
+    display: none;
+}
+
+.scanner-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-retry {
+    margin-top: 10px;
+}
+
 .scanner-bottle-icon {
     font-size: 5rem;
     color: rgba(212, 175, 55, 0.2);

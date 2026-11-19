@@ -13,17 +13,11 @@ function escapeHtml(valor) {
     return div.innerHTML;
 }
 
-const MOCK_SCANNED_WINES = [
-    { title: "Chardonnay Gran Reserva 2021", food: "Salmão Grelhado" },
-    { title: "Barolo DOCG 2018", food: "Costela de Cordeiro" },
-    { title: "Alvarinho Reserva 2022", food: "Bacalhau à Portuguesa" },
-    { title: "Chianti Classico DOCG 2019", food: "Massa à Bolonhesa" }
-];
-
 // Controlador principal da aplicação
 class WineMatchApp {
     constructor() {
         this.currentScanMatch = null;
+        this.cameraStream = null;
     }
 
     init() {
@@ -40,6 +34,7 @@ class WineMatchApp {
             if (e.key !== "Escape") return;
             document.querySelectorAll(".modal-overlay.open, .login-drawer-overlay.open").forEach((el) => el.classList.remove("open"));
             document.body.classList.remove("modal-open");
+            this.fecharCamera();
         });
     }
 
@@ -109,30 +104,91 @@ class WineMatchApp {
         }
     }
 
-    // 3. Scanner de Rótulo
+    // 3. Scanner de Rótulo (câmera + IA)
     initScannerModal() {
         const scannerModal = document.getElementById("scanner-modal");
         const btnOpen = document.getElementById("btn-scan-label");
         const btnClose = document.getElementById("btn-close-scanner");
         const btnTrigger = document.getElementById("btn-trigger-scan");
+        const btnGallery = document.getElementById("btn-scan-gallery");
+        const btnRetry = document.getElementById("btn-scan-retry");
+        const fileInput = document.getElementById("scanner-file");
         const btnUseScanned = document.getElementById("btn-use-scanned");
+        const actions = document.getElementById("scanner-actions");
         const analysisOverlay = document.getElementById("scanner-analysis-overlay");
         const statusText = document.getElementById("scanner-status-text");
         const resultBox = document.getElementById("scanner-result");
+        const scannedLabel = document.getElementById("scanned-label");
         const scannedTitle = document.getElementById("scanned-wine-title");
+        const scannedDesc = document.getElementById("scanned-desc");
+        const video = document.getElementById("scanner-video");
+        const preview = document.getElementById("scanner-preview");
+        const placeholder = document.getElementById("scanner-placeholder");
         const foodInput = document.getElementById("food-input");
+
+        // Volta para o estado inicial: câmera ligada, sem foto e sem resultado
+        const prepararCamera = async () => {
+            resultBox.classList.add("hidden");
+            analysisOverlay.classList.add("hidden");
+            preview.classList.add("hidden");
+            actions.classList.remove("hidden");
+            this.currentScanMatch = null;
+
+            const ligou = await this.abrirCamera(video);
+            video.classList.toggle("hidden", !ligou);
+            placeholder.classList.toggle("hidden", ligou);
+
+            if (!ligou) {
+                this.mostrarAviso("Não consegui abrir a câmera. Você pode tirar a foto pelo botão abaixo.");
+            }
+        };
 
         const openScanner = () => {
             scannerModal.classList.add("open");
             document.body.classList.add("modal-open");
-            resultBox.classList.add("hidden");
-            analysisOverlay.classList.add("hidden");
-            btnTrigger.style.display = "inline-flex";
+            prepararCamera();
         };
 
         const closeScanner = () => {
+            this.fecharCamera();
             scannerModal.classList.remove("open");
             document.body.classList.remove("modal-open");
+        };
+
+        // Recebe a foto (da câmera ou da galeria), mostra na tela e manda para a IA
+        const analisar = async (fotoBase64) => {
+            this.fecharCamera();
+            preview.src = fotoBase64;
+            preview.classList.remove("hidden");
+            video.classList.add("hidden");
+            placeholder.classList.add("hidden");
+            actions.classList.add("hidden");
+            analysisOverlay.classList.remove("hidden");
+            statusText.textContent = "Lendo a imagem...";
+
+            try {
+                const leitura = await this.analisarImagem(fotoBase64);
+                analysisOverlay.classList.add("hidden");
+
+                if (leitura.tipo === "outro" || !leitura.nome || !leitura.prato_sugerido) {
+                    this.mostrarAviso(leitura.observacao || "Não consegui identificar um vinho ou prato nessa foto.");
+                    prepararCamera();
+                    return;
+                }
+
+                this.currentScanMatch = { title: leitura.nome, food: leitura.prato_sugerido };
+                scannedLabel.textContent = leitura.tipo === "vinho" ? "Vinho identificado:" : "Prato identificado:";
+                scannedTitle.textContent = leitura.nome;
+                scannedDesc.textContent = leitura.tipo === "vinho"
+                    ? `Prato sugerido para esse vinho: ${leitura.prato_sugerido}.`
+                    : "Vamos buscar o vinho que combina com ele.";
+                resultBox.classList.remove("hidden");
+            } catch (error) {
+                console.error("Erro ao analisar a foto:", error);
+                analysisOverlay.classList.add("hidden");
+                this.mostrarAviso(error.message);
+                prepararCamera();
+            }
         };
 
         btnOpen.addEventListener("click", openScanner);
@@ -142,23 +198,32 @@ class WineMatchApp {
             if (e.target === scannerModal) closeScanner();
         });
 
+        // Botão principal: com a câmera ligada tira a foto; sem câmera abre o seletor do celular
         btnTrigger.addEventListener("click", () => {
-            btnTrigger.style.display = "none";
-            analysisOverlay.classList.remove("hidden");
-
-            statusText.textContent = "Preparando leitura...";
-            setTimeout(() => { statusText.textContent = "Lendo o rótulo..."; }, 600);
-            setTimeout(() => { statusText.textContent = "Identificando o vinho..."; }, 1200);
-
-            setTimeout(() => {
-                analysisOverlay.classList.add("hidden");
-                const randomIndex = Math.floor(Math.random() * MOCK_SCANNED_WINES.length);
-                this.currentScanMatch = MOCK_SCANNED_WINES[randomIndex];
-
-                scannedTitle.textContent = this.currentScanMatch.title;
-                resultBox.classList.remove("hidden");
-            }, 2000);
+            if (this.cameraStream) {
+                analisar(this.capturarFoto(video));
+            } else {
+                fileInput.click();
+            }
         });
+
+        btnGallery.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", async () => {
+            const arquivo = fileInput.files[0];
+            fileInput.value = "";
+            if (!arquivo) return;
+
+            try {
+                const fotoBase64 = await this.arquivoParaBase64(arquivo);
+                analisar(fotoBase64);
+            } catch (error) {
+                console.error("Erro ao abrir a imagem:", error);
+                this.mostrarAviso("Não consegui abrir essa imagem.");
+            }
+        });
+
+        btnRetry.addEventListener("click", prepararCamera);
 
         btnUseScanned.addEventListener("click", () => {
             if (this.currentScanMatch) {
@@ -167,6 +232,139 @@ class WineMatchApp {
                 this.consultarSommelier();
             }
         });
+    }
+
+    // Liga a câmera traseira (no PC usa a webcam) e mostra no <video>
+    async abrirCamera(video) {
+        this.fecharCamera();
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            return false;
+        }
+
+        try {
+            this.cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { ideal: "environment" } },
+                audio: false
+            });
+            video.srcObject = this.cameraStream;
+            await video.play();
+            return true;
+        } catch (error) {
+            console.warn("Câmera indisponível:", error);
+            this.fecharCamera();
+            return false;
+        }
+    }
+
+    // Desliga a câmera (senão a luzinha continua acesa)
+    fecharCamera() {
+        if (this.cameraStream) {
+            this.cameraStream.getTracks().forEach((track) => track.stop());
+            this.cameraStream = null;
+        }
+        const video = document.getElementById("scanner-video");
+        if (video) video.srcObject = null;
+    }
+
+    // Desenha o quadro atual do vídeo num canvas e devolve a foto em base64
+    capturarFoto(video) {
+        return this.desenharNoCanvas(video, video.videoWidth, video.videoHeight);
+    }
+
+    // Lê uma imagem escolhida na galeria
+    arquivoParaBase64(arquivo) {
+        return new Promise((resolve, reject) => {
+            const url = URL.createObjectURL(arquivo);
+            const img = new Image();
+            img.onload = () => {
+                const foto = this.desenharNoCanvas(img, img.naturalWidth, img.naturalHeight);
+                URL.revokeObjectURL(url);
+                resolve(foto);
+            };
+            img.onerror = () => {
+                URL.revokeObjectURL(url);
+                reject(new Error("Imagem inválida"));
+            };
+            img.src = url;
+        });
+    }
+
+    // Reduz a foto para no máximo 1024px no lado maior, para o envio ser rápido
+    desenharNoCanvas(origem, largura, altura) {
+        const canvas = document.getElementById("scanner-canvas");
+        const escala = Math.min(1, 1024 / Math.max(largura, altura));
+        canvas.width = Math.round(largura * escala);
+        canvas.height = Math.round(altura * escala);
+        canvas.getContext("2d").drawImage(origem, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL("image/jpeg", 0.8);
+    }
+
+    // Pergunta para a IA o que aparece na foto
+    async analisarImagem(fotoBase64) {
+        const prompt = `
+            Você é um Sommelier. Analise a foto enviada pelo usuário e classifique o que aparece:
+            - "vinho": garrafa ou rótulo de vinho
+            - "prato": comida ou prato pronto
+            - "outro": qualquer outra coisa, ou uma foto desfocada/escura demais para ler
+
+            Leia apenas o que estiver visível. Não invente produtor, uva ou safra que não aparecem na imagem.
+            Se só der para identificar o estilo (ex: um tinto Malbec sem rótulo legível), use um nome genérico.
+
+            Responda EXCLUSIVAMENTE um objeto JSON válido, sem texto extra nem blocos markdown, com esta estrutura:
+            {
+              "tipo": "vinho, prato ou outro",
+              "nome": "Se vinho: nome com produtor, uva e safra quando legíveis. Se prato: nome do prato. Se outro: vazio",
+              "prato_sugerido": "Se vinho: um prato que combina bem com ele (nome curto). Se prato: o mesmo nome do prato. Se outro: vazio",
+              "observacao": "Uma frase curta explicando o que você viu ou por que não deu para identificar"
+            }
+        `;
+
+        const base64 = fotoBase64.split(",")[1];
+        return this.chamarGemini([
+            { text: prompt },
+            { inlineData: { mimeType: "image/jpeg", data: base64 } }
+        ]);
+    }
+
+    // Envia o conteúdo (texto e/ou imagem) para o Worker e devolve o JSON da resposta
+    async chamarGemini(parts) {
+        let data = null;
+
+        for (const modelo of DEFAULT_MODELS) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        modelo,
+                        corpo: { contents: [{ parts }], generationConfig: { responseMimeType: "application/json" } }
+                    })
+                });
+
+                if (response.status === 503 || response.status === 429) {
+                    console.warn(`Modelo ${modelo} ocupado. Tentando próximo...`);
+                    continue;
+                }
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Erro na API (${response.status}): ${errorData.error?.message || 'Falha na requisição'}`);
+                }
+
+                data = await response.json();
+                break;
+            } catch (err) {
+                if (modelo === DEFAULT_MODELS[DEFAULT_MODELS.length - 1]) throw err;
+            }
+        }
+
+        if (!data) throw new Error("Servidores do Google temporariamente ocupados. Tente novamente em instantes.");
+
+        let rawText = data.candidates[0].content.parts[0].text;
+        rawText = rawText.replace(/```json/gi, "").replace(/```/g, "").trim();
+
+        return JSON.parse(rawText);
     }
 
     // 4. Modal de Detalhes e Troca de Abas
@@ -296,43 +494,8 @@ class WineMatchApp {
             }
         `;
 
-        let data = null;
-
         try {
-            for (const modelo of DEFAULT_MODELS) {
-                try {
-                    const response = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-        modelo,
-        corpo: { contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } }
-    })
-});
-
-                    if (response.status === 503 || response.status === 429) {
-                        console.warn(`Modelo ${modelo} ocupado. Tentando próximo...`);
-                        continue;
-                    }
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(`Erro na API (${response.status}): ${errorData.error?.message || 'Falha na requisição'}`);
-                    }
-
-                    data = await response.json();
-                    break;
-                } catch (err) {
-                    if (modelo === DEFAULT_MODELS[DEFAULT_MODELS.length - 1]) throw err;
-                }
-            }
-
-            if (!data) throw new Error("Servidores do Google temporariamente ocupados. Tente novamente em instantes.");
-
-            let rawText = data.candidates[0].content.parts[0].text;
-            rawText = rawText.replace(/```json/gi, "").replace(/```/g, "").trim();
-
-            const resultado = JSON.parse(rawText);
+            const resultado = await this.chamarGemini([{ text: prompt }]);
             this.renderizarResultado(resultado);
         } catch (error) {
             console.error("Detalhes do erro:", error);

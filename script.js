@@ -18,6 +18,7 @@ class WineMatchApp {
     constructor() {
         this.currentScanMatch = null;
         this.cameraStream = null;
+        this.modoBusca = "prato"; // "prato" busca vinhos | "vinho" busca pratos
     }
 
     init() {
@@ -170,17 +171,17 @@ class WineMatchApp {
                 const leitura = await this.analisarImagem(fotoBase64);
                 analysisOverlay.classList.add("hidden");
 
-                if (leitura.tipo === "outro" || !leitura.nome || !leitura.prato_sugerido) {
+                if (!["vinho", "prato"].includes(leitura.tipo) || !leitura.nome) {
                     this.mostrarAviso(leitura.observacao || "Não consegui identificar um vinho ou prato nessa foto.");
                     prepararCamera();
                     return;
                 }
 
-                this.currentScanMatch = { title: leitura.nome, food: leitura.prato_sugerido };
+                this.currentScanMatch = { tipo: leitura.tipo, nome: leitura.nome };
                 scannedLabel.textContent = leitura.tipo === "vinho" ? "Vinho identificado:" : "Prato identificado:";
                 scannedTitle.textContent = leitura.nome;
                 scannedDesc.textContent = leitura.tipo === "vinho"
-                    ? `Prato sugerido para esse vinho: ${leitura.prato_sugerido}.`
+                    ? "Vamos buscar os pratos que combinam com ele."
                     : "Vamos buscar o vinho que combina com ele.";
                 resultBox.classList.remove("hidden");
             } catch (error) {
@@ -227,7 +228,8 @@ class WineMatchApp {
 
         btnUseScanned.addEventListener("click", () => {
             if (this.currentScanMatch) {
-                foodInput.value = this.currentScanMatch.food;
+                foodInput.value = this.currentScanMatch.nome;
+                this.modoBusca = this.currentScanMatch.tipo;
                 closeScanner();
                 this.consultarSommelier();
             }
@@ -315,7 +317,6 @@ class WineMatchApp {
             {
               "tipo": "vinho, prato ou outro",
               "nome": "Se vinho: nome com produtor, uva e safra quando legíveis. Se prato: nome do prato. Se outro: vazio",
-              "prato_sugerido": "Se vinho: um prato que combina bem com ele (nome curto). Se prato: o mesmo nome do prato. Se outro: vazio",
               "observacao": "Uma frase curta explicando o que você viu ou por que não deu para identificar"
             }
         `;
@@ -412,6 +413,7 @@ class WineMatchApp {
         const copyBtn = document.getElementById("btn-copy-result");
 
         searchBtn.addEventListener("click", () => this.consultarSommelier());
+        foodInput.addEventListener("input", () => { this.modoBusca = "prato"; });
         foodInput.addEventListener("keydown", (e) => {
             if (e.key === "Enter") this.consultarSommelier();
         });
@@ -419,6 +421,7 @@ class WineMatchApp {
         document.querySelectorAll(".chip-prato").forEach((chip) => {
             chip.addEventListener("click", () => {
                 foodInput.value = chip.textContent.trim();
+                this.modoBusca = "prato";
                 this.consultarSommelier();
             });
         });
@@ -432,6 +435,9 @@ class WineMatchApp {
         const searchBtn = document.getElementById("sommelier-btn");
         const loading = document.getElementById("sommelier-loading");
         const resultCard = document.getElementById("sommelier-result");
+        const foodsCard = document.getElementById("wine-foods-result");
+        const loadingTitle = document.getElementById("sommelier-loading-title");
+        const modo = this.modoBusca;
 
         if (!input) {
             this.mostrarAviso("Digite um prato para buscar a harmonização.");
@@ -441,6 +447,10 @@ class WineMatchApp {
         searchBtn.disabled = true;
         loading.style.display = "block";
         resultCard.style.display = "none";
+        foodsCard.style.display = "none";
+        loadingTitle.textContent = modo === "vinho"
+            ? "Escolhendo os pratos para o seu vinho..."
+            : "Escolhendo o vinho para o seu prato...";
 
         document.getElementById("results-section").classList.add("active");
         document.getElementById("results-section").scrollIntoView({ behavior: "smooth" });
@@ -495,16 +505,92 @@ class WineMatchApp {
         `;
 
         try {
-            const resultado = await this.chamarGemini([{ text: prompt }]);
-            this.renderizarResultado(resultado);
+            if (modo === "vinho") {
+                const resultado = await this.chamarGemini([{ text: this.montarPromptPratos(input) }]);
+                this.renderizarPratos(resultado);
+            } else {
+                const resultado = await this.chamarGemini([{ text: prompt }]);
+                this.renderizarResultado(resultado);
+            }
         } catch (error) {
             console.error("Detalhes do erro:", error);
             this.mostrarAviso(error.message);
         } finally {
             searchBtn.disabled = false;
             loading.style.display = "none";
-            if (resultCard.style.display === "none") document.getElementById("results-section").classList.remove("active");
+            if (resultCard.style.display === "none" && foodsCard.style.display === "none") document.getElementById("results-section").classList.remove("active");
         }
+    }
+
+    // Prompt do caminho inverso: o usuário informou um vinho e quer saber o que servir
+    montarPromptPratos(vinho) {
+        return `
+            Você é um Sommelier e Curador Enogastronômico de alta gastronomia.
+            O usuário informou este vinho: "${vinho}".
+
+            Sugira pratos que combinem com ele, pensando em corpo, acidez, taninos e estilo do vinho.
+            Se a mensagem não for um vinho, responda no campo "perfil" pedindo educadamente que informe um vinho e deixe "pratos" vazio.
+
+            Responda EXCLUSIVAMENTE um objeto JSON válido, sem texto introdutório nem blocos markdown, com exatamente esta estrutura:
+            {
+              "vinho": "Nome do vinho com uva e região quando possível",
+              "perfil": "Descrição curta do estilo do vinho (corpo, acidez, taninos, aromas)",
+              "temperatura": "Temperatura ideal de serviço (ex: 16°C a 18°C)",
+              "pratos": [
+                { "nome": "Nome curto do prato", "motivo": "Por que combina com esse vinho" }
+              ]
+            }
+
+            Sugira de 4 a 5 pratos, de preferência variados (carne, massa, queijo, peixe...).
+        `;
+    }
+
+    // Mostra a lista de pratos sugeridos para o vinho
+    renderizarPratos(resultado) {
+        const card = document.getElementById("wine-foods-result");
+        const lista = document.getElementById("wf-lista");
+        const foodInput = document.getElementById("food-input");
+
+        document.getElementById("wf-vinho").textContent = resultado.vinho || "-";
+        document.getElementById("wf-perfil").textContent = resultado.perfil || "-";
+        document.getElementById("wf-temperatura").textContent = resultado.temperatura || "-";
+
+        lista.innerHTML = "";
+        const pratos = Array.isArray(resultado.pratos) ? resultado.pratos : [];
+
+        if (pratos.length === 0) {
+            throw new Error(resultado.perfil || "Não consegui sugerir pratos para esse vinho.");
+        }
+
+        pratos.forEach((item) => {
+            const bloco = document.createElement("div");
+            bloco.className = "wm-card";
+
+            const conteudo = document.createElement("div");
+            conteudo.className = "wm-card-content";
+
+            const titulo = document.createElement("h4");
+            titulo.textContent = item.nome || "-";
+
+            const motivo = document.createElement("p");
+            motivo.textContent = item.motivo || "";
+
+            const botao = document.createElement("button");
+            botao.type = "button";
+            botao.className = "wm-btn-secondary wf-btn-buscar";
+            botao.textContent = "Ver vinhos para este prato";
+            botao.addEventListener("click", () => {
+                foodInput.value = item.nome;
+                this.modoBusca = "prato";
+                this.consultarSommelier();
+            });
+
+            conteudo.append(titulo, motivo, botao);
+            bloco.appendChild(conteudo);
+            lista.appendChild(bloco);
+        });
+
+        card.style.display = "block";
     }
 
     // Renderiza Card e alimenta dinamicamente todas as partes do Modal

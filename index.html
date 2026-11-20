@@ -163,8 +163,36 @@
             <!-- Loading com Spinner -->
             <div id="sommelier-loading" class="sommelier-loading" aria-live="polite" style="display: none;">
                 <div class="spinner"></div>
-                <h2>Escolhendo o vinho para o seu prato...</h2>
+                <h2 id="sommelier-loading-title">Escolhendo o vinho para o seu prato...</h2>
                 <p>Isso leva só alguns segundos</p>
+            </div>
+
+            <!-- Resultado do caminho inverso: pratos para o vinho escaneado -->
+            <div id="wine-foods-result" class="wm-result-container" style="display: none;">
+                <div class="wm-result-header">
+                    <span class="wm-badge">Pratos que combinam</span>
+                    <h3 id="wf-vinho" class="wm-wine-title">-</h3>
+                </div>
+
+                <div class="wm-result-grid">
+                    <div class="wm-card wm-card-full">
+                        <div class="wm-card-icon"><i class="fa-solid fa-wine-glass"></i></div>
+                        <div class="wm-card-content">
+                            <h4>Perfil do vinho</h4>
+                            <p id="wf-perfil">-</p>
+                        </div>
+                    </div>
+
+                    <div class="wm-card wm-card-full">
+                        <div class="wm-card-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div class="wm-card-content">
+                            <h4>Temperatura Ideal</h4>
+                            <p id="wf-temperatura" class="wm-highlight-text">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wf-lista" class="wm-result-grid"></div>
             </div>
 
             <!-- Card de Resultado Interativo WineMatch -->
@@ -230,8 +258,8 @@
                         <i class="fa-solid fa-utensils"></i>
                         <span class="step-number">1</span>
                     </div>
-                    <h3>Você informa o prato</h3>
-                    <p>Digite a refeição que você planeja servir ou use o simulador de leitura de rótulo.</p>
+                    <h3>Você informa o prato ou o vinho</h3>
+                    <p>Digite a refeição que você planeja servir ou fotografe o rótulo do vinho ou o prato.</p>
                 </div>
                 
                 <div class="step-arrow">

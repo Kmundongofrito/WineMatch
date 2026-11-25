@@ -316,6 +316,7 @@ class WineMatchApp {
             Responda EXCLUSIVAMENTE um objeto JSON válido, sem texto extra nem blocos markdown, com esta estrutura:
             {
               "tipo": "vinho, prato ou outro",
+              "preco_medio": "faixa de preço média no Brasil em reais, ex: R$ 120 a R$ 160"
               "nome": "Se vinho: nome com produtor, uva e safra quando legíveis. Se prato: nome do prato. Se outro: vazio",
               "observacao": "Uma frase curta explicando o que você viu ou por que não deu para identificar"
             }

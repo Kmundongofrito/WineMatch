@@ -23,19 +23,19 @@ class WineMatchApp {
 
     init() {
         this.initAgeVerification();
-        this.initLoginDrawer();
+        //this.initLoginDrawer();
         this.initScannerModal();
         this.initDetailsModal();
         this.initSommelierSearch();
         this.initTeclado();
     }
 
-    initTeclado() {
+    //initTeclado() {
         document.addEventListener("keydown", (e) => {
-            if (e.key !== "Escape") return;
-            document.querySelectorAll(".modal-overlay.open, .login-drawer-overlay.open").forEach((el) => el.classList.remove("open"));
-            document.body.classList.remove("modal-open");
-            this.fecharCamera();
+        if (e.key !== "Escape") return;
+          //  document.querySelectorAll(".modal-overlay.open, .login-drawer-overlay.open").forEach((el) => el.classList.remove("open"));
+        document.body.classList.remove("modal-open");
+        this.fecharCamera();
         });
     }
 
@@ -64,7 +64,7 @@ class WineMatchApp {
         });
     }
 
-    // 2. Gaveta de Login
+    /* 2. Gaveta de Login
     initLoginDrawer() {
         const loginDrawer = document.getElementById("login-drawer");
         const btnOpen = document.getElementById("btn-open-login");
@@ -103,7 +103,7 @@ class WineMatchApp {
                 closeDrawer();
             });
         }
-    }
+    } */
 
     // 3. Scanner de Rótulo (câmera + IA)
     initScannerModal() {

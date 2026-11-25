@@ -469,6 +469,7 @@ class WineMatchApp {
             Responda EXCLUSIVAMENTE um objeto JSON válido, sem texto introdutório, notas ou blocos markdown adicionais, com exatamente a seguinte estrutura:
             {
               "vinho": "Nome do vinho sugerido com variedade e região (ex: Catena Zapata Malbec)",
+              "preco_medio": "faixa de preço média no Brasil em reais, ex: R$ 120 a R$ 160"
               "harmonizacao": "Explicação detalhada de por que combina sensorialmente e no paladar com o prato",
               "temperatura": "Temperatura ideal de serviço (ex: 16°C a 18°C)",
               "dica_ambiente": "Dica de ambiente, tipo de taça recomendada e estilo da refeição",

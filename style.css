@@ -274,7 +274,7 @@ h1, h2, h3, h4 {
     color: var(--color-gold-bright);
 }
 
-.btn-login-trigger {
+/*.btn-login-trigger {
     background: transparent;
     border: 1px solid rgba(212, 175, 55, 0.4);
     color: var(--color-gold-bright);
@@ -287,14 +287,14 @@ h1, h2, h3, h4 {
     align-items: center;
     gap: 8px;
     transition: var(--transition-fast);
-}
+}*/
 
 .btn-login-trigger:hover {
     background: var(--color-gold-metallic);
     color: #1a030a;
 }
 
-/* Gaveta de login */
+/* Gaveta de login 
 .login-drawer-overlay {
     position: fixed;
     top: 0;
@@ -307,7 +307,7 @@ h1, h2, h3, h4 {
     opacity: 0;
     visibility: hidden;
     transition: opacity var(--transition-smooth), visibility var(--transition-smooth);
-}
+}*/
 
 .login-drawer-overlay.open {
     opacity: 1;

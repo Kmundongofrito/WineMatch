@@ -1,11 +1,65 @@
 // Constantes globais
 const API_URL = "https://winematch-api.gianemolo.workers.dev/";
 
-const DEFAULT_MODELS = [
-    "gemini-3.6-flash",
-    "gemini-3.5-flash",
-    "gemini-3.1-flash-lite"
+// IAs gratuitas usadas em "corrida". A ordem é só a preferência inicial:
+// depois o site aprende qual está mais rápida e passa a começar por ela.
+// "visao" indica se o modelo aceita foto (scanner). Os modelos precisam
+// estar na lista MODELOS do worker.js.
+const PROVEDORES = [
+    { id: "gemini",   modelo: "gemini-3.6-flash",                           visao: true  },
+    { id: "groq",     modelo: "openai/gpt-oss-120b",                        visao: false },
+    { id: "cerebras", modelo: "gpt-oss-120b",                               visao: false },
+    { id: "mistral",  modelo: "mistral-small-latest",                       visao: true  },
+    { id: "groq",     modelo: "meta-llama/llama-4-scout-17b-16e-instruct",  visao: true  },
+    { id: "gemini",   modelo: "gemini-3.5-flash",                           visao: true  },
+    { id: "gemini",   modelo: "gemini-3.1-flash-lite",                      visao: true  }
 ];
+
+const ATRASO_PROXIMA_MS = 2500;   // se a IA atual não responder nesse tempo, chama a próxima em paralelo
+const TIMEOUT_TOTAL_MS = 30000;   // desiste de tudo depois disso
+const STATS_KEY = "winematch_ia_stats";
+
+// Guarda no navegador o tempo médio de cada IA e quem falhou há pouco
+const statsIA = {
+    ler() {
+        try { return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; } catch { return {}; }
+    },
+    salvar(stats) {
+        try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); } catch { /* sem localStorage, segue sem histórico */ }
+    },
+    chave(p) {
+        return `${p.id}/${p.modelo}`;
+    },
+    sucesso(p, ms) {
+        const stats = this.ler();
+        const item = stats[this.chave(p)] || {};
+        item.media = item.media == null ? ms : item.media * 0.7 + ms * 0.3;
+        item.offAte = 0;
+        stats[this.chave(p)] = item;
+        this.salvar(stats);
+    },
+    falha(p, status) {
+        const stats = this.ler();
+        const item = stats[this.chave(p)] || {};
+        // chave/modelo inválido: descansa mais tempo; limite/instabilidade: 1 minuto
+        const descanso = [401, 403, 404].includes(status) ? 10 * 60000 : 60000;
+        item.offAte = Date.now() + descanso;
+        stats[this.chave(p)] = item;
+        this.salvar(stats);
+    },
+    // Mais rápida primeiro; quem ainda não tem histórico segue a ordem da lista
+    ordenar(lista) {
+        const stats = this.ler();
+        const agora = Date.now();
+        const pontuar = (p, i) => stats[this.chave(p)]?.media ?? 1500 + i * 100;
+        const livres = lista.filter((p) => !(stats[this.chave(p)]?.offAte > agora));
+        const base = livres.length ? livres : lista;
+        return base
+            .map((p, i) => ({ p, nota: pontuar(p, i) }))
+            .sort((a, b) => a.nota - b.nota)
+            .map((x) => x.p);
+    }
+};
 
 function escapeHtml(valor) {
     const div = document.createElement("div");
@@ -316,57 +370,107 @@ class WineMatchApp {
             Responda EXCLUSIVAMENTE um objeto JSON válido, sem texto extra nem blocos markdown, com esta estrutura:
             {
               "tipo": "vinho, prato ou outro",
-              "preco_medio": "faixa de preço média no Brasil em reais, ex: R$ 120 a R$ 160"
               "nome": "Se vinho: nome com produtor, uva e safra quando legíveis. Se prato: nome do prato. Se outro: vazio",
               "observacao": "Uma frase curta explicando o que você viu ou por que não deu para identificar"
             }
         `;
 
         const base64 = fotoBase64.split(",")[1];
-        return this.chamarGemini([
-            { text: prompt },
-            { inlineData: { mimeType: "image/jpeg", data: base64 } }
-        ]);
+        return this.chamarIA(prompt, base64);
     }
 
-    // Envia o conteúdo (texto e/ou imagem) para o Worker e devolve o JSON da resposta
-    async chamarGemini(parts) {
-        let data = null;
+    // Manda o pedido para várias IAs gratuitas e devolve o JSON da primeira que responder.
+    // Começa pela mais rápida até agora; se ela demorar ou falhar, chama a próxima sem desistir da anterior.
+    chamarIA(prompt, imagemBase64 = null) {
+        const candidatos = statsIA.ordenar(PROVEDORES.filter((p) => !imagemBase64 || p.visao));
 
-        for (const modelo of DEFAULT_MODELS) {
-            try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        modelo,
-                        corpo: { contents: [{ parts }], generationConfig: { responseMimeType: "application/json" } }
+        return new Promise((resolve, reject) => {
+            const controllers = [];
+            const timers = [];
+            const lancados = new Set();
+            let finalizado = false;
+            let falhas = 0;
+
+            const encerrar = () => {
+                timers.forEach(clearTimeout);
+                controllers.forEach((c) => c.abort());
+            };
+
+            timers.push(setTimeout(() => {
+                if (finalizado) return;
+                finalizado = true;
+                encerrar();
+                reject(new Error("As IAs demoraram demais para responder. Tente novamente em instantes."));
+            }, TIMEOUT_TOTAL_MS));
+
+            const lancar = (i) => {
+                if (finalizado || i >= candidatos.length || lancados.has(i)) return;
+                lancados.add(i);
+
+                const provedor = candidatos[i];
+                const controller = new AbortController();
+                controllers.push(controller);
+                const inicio = performance.now();
+
+                // Se esta IA demorar, a próxima já entra na corrida
+                timers.push(setTimeout(() => lancar(i + 1), ATRASO_PROXIMA_MS));
+
+                this.consultarProvedor(provedor, prompt, imagemBase64, controller.signal)
+                    .then((resultado) => {
+                        if (finalizado) return;
+                        finalizado = true;
+                        statsIA.sucesso(provedor, performance.now() - inicio);
+                        console.info(`Resposta de ${provedor.id}/${provedor.modelo} em ${Math.round(performance.now() - inicio)} ms`);
+                        encerrar();
+                        resolve(resultado);
                     })
-                });
+                    .catch((erro) => {
+                        if (finalizado) return;
+                        console.warn(`Falha em ${provedor.id}/${provedor.modelo}:`, erro.message);
+                        statsIA.falha(provedor, erro.status);
+                        falhas++;
 
-                if (response.status === 503 || response.status === 429) {
-                    console.warn(`Modelo ${modelo} ocupado. Tentando próximo...`);
-                    continue;
-                }
+                        if (falhas >= candidatos.length) {
+                            finalizado = true;
+                            encerrar();
+                            reject(new Error("As IAs estão ocupadas no momento. Tente novamente em instantes."));
+                        } else {
+                            lancar(i + 1);
+                        }
+                    });
+            };
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Erro na API (${response.status}): ${errorData.error?.message || 'Falha na requisição'}`);
-                }
+            lancar(0);
+        });
+    }
 
-                data = await response.json();
-                break;
-            } catch (err) {
-                if (modelo === DEFAULT_MODELS[DEFAULT_MODELS.length - 1]) throw err;
-            }
+    // Pede a resposta de uma IA específica (via Worker) e já valida que veio um JSON
+    async consultarProvedor(provedor, prompt, imagemBase64, signal) {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                provedor: provedor.id,
+                modelo: provedor.modelo,
+                prompt,
+                imagem: imagemBase64
+            }),
+            signal
+        });
+
+        if (!response.ok) {
+            const erro = new Error(`HTTP ${response.status}`);
+            erro.status = response.status;
+            throw erro;
         }
 
-        if (!data) throw new Error("Servidores do Google temporariamente ocupados. Tente novamente em instantes.");
+        const data = await response.json();
+        const bruto = String(data.texto || "").replace(/```json/gi, "").replace(/```/g, "").trim();
+        const abre = bruto.indexOf("{");
+        const fecha = bruto.lastIndexOf("}");
 
-        let rawText = data.candidates[0].content.parts[0].text;
-        rawText = rawText.replace(/```json/gi, "").replace(/```/g, "").trim();
-
-        return JSON.parse(rawText);
+        if (abre === -1 || fecha === -1) throw new Error("Resposta sem JSON");
+        return JSON.parse(bruto.slice(abre, fecha + 1));
     }
 
     // 4. Modal de Detalhes e Troca de Abas
@@ -430,7 +534,7 @@ class WineMatchApp {
         copyBtn.addEventListener("click", () => this.copiarHarmonizacao());
     }
 
-    // Chamada Direta à API Gemini com JSON Estruturado
+    // Busca a harmonização com a IA (JSON estruturado)
     async consultarSommelier() {
         const input = document.getElementById("food-input").value.trim();
         const searchBtn = document.getElementById("sommelier-btn");
@@ -469,7 +573,6 @@ class WineMatchApp {
             Responda EXCLUSIVAMENTE um objeto JSON válido, sem texto introdutório, notas ou blocos markdown adicionais, com exatamente a seguinte estrutura:
             {
               "vinho": "Nome do vinho sugerido com variedade e região (ex: Catena Zapata Malbec)",
-              "preco_medio": "faixa de preço média no Brasil em reais, ex: R$ 120 a R$ 160"
               "harmonizacao": "Explicação detalhada de por que combina sensorialmente e no paladar com o prato",
               "temperatura": "Temperatura ideal de serviço (ex: 16°C a 18°C)",
               "dica_ambiente": "Dica de ambiente, tipo de taça recomendada e estilo da refeição",
@@ -508,10 +611,10 @@ class WineMatchApp {
 
         try {
             if (modo === "vinho") {
-                const resultado = await this.chamarGemini([{ text: this.montarPromptPratos(input) }]);
+                const resultado = await this.chamarIA(this.montarPromptPratos(input));
                 this.renderizarPratos(resultado);
             } else {
-                const resultado = await this.chamarGemini([{ text: prompt }]);
+                const resultado = await this.chamarIA(prompt);
                 this.renderizarResultado(resultado);
             }
         } catch (error) {
